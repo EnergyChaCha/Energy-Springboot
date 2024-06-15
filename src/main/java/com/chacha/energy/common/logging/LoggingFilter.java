@@ -141,6 +141,8 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         if (request.getContentType() != null && request.getContentType().contains("multipart/form-data")) {
             logMultipartRequest(request, stringBuilder);
+        } else if (request.getRequestURI().contains("auth")) {
+            // 비밀번호 포함이므로 내용 로깅 안 함
         } else {
 
             logPayload("Request", request.getContentType(), request.getInputStream(), stringBuilder);
@@ -160,28 +162,13 @@ public class LoggingFilter extends OncePerRequestFilter {
     private void logPayload(String prefix, String contentType, InputStream inputStream,
                             StringBuilder stringBuilder) throws IOException {
         boolean visible = isVisible(MediaType.valueOf(contentType == null ? "application/json" : contentType));
-        int maxLength = 1900; // 스트링빌더 최대 길이
-
         if (visible) {
+            stringBuilder.append(prefix).append(" Payload:\n");
+            stringBuilder.append("```");
             byte[] content = StreamUtils.copyToByteArray(inputStream);
-            stringBuilder.append(prefix).append(" Payload:");
-            if (content.length > 0) {
-                String contentString = new String(content);
-                // 현재 스트링빌더에 있는 텍스트의 길이 확인
-                int currentLength = stringBuilder.length();
-                if (currentLength < maxLength) {
-                    int remainingLength = maxLength - currentLength; // 남은 길이 계산
-
-                    if (contentString.length() <= remainingLength) {
-                        // contentString이 남은 길이보다 작거나 같으면 전체 추가
-                        stringBuilder.append(contentString).append("\n");
-                    } else {
-                        // contentString이 남은 길이보다 크면 잘라서 추가
-                        stringBuilder.append(contentString, 0, remainingLength).append("\n");
-                    }
-                }
-            }
-
+            String contentString = new String(content);
+            stringBuilder.append(contentString).append("\n");
+            stringBuilder.append("```");
         } else {
             stringBuilder.append(prefix).append(" Payload: Binary Content").append("\n");
         }

@@ -10,6 +10,22 @@
         </encoder>
     </appender>
 
+    <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+        <!-- do not set your webhook here if you want to commit this file to your VCS, instead look below for an example on how to set it at runtime -->
+        <webhookUri>${DISCORD_WEBHOOK}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{MM-dd HH:mm:ss} [%thread] [%-5level] %logger{36} - %msg%n```%ex{full}```</pattern>
+        </layout>
+        <!-- Fill in username and avatarUrl with your desired values -->
+        <username>로그봇</username>
+        <avatarUrl>http://i.imgur.com/UoiA3OQ.png</avatarUrl>
+        <tts>false</tts>
+    </appender>
+
+    <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DISCORD"/>
+    </appender>
+
     <springProfile name="dev">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
@@ -19,7 +35,7 @@
     <springProfile name="prod">
         <root>
             <level value="INFO"/>
-            <appender-ref ref="MATTERMOST"/>
+            <appender-ref ref="ASYNC_DISCORD"/>
         </root>
     </springProfile>
 </configuration>
