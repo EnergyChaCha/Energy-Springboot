@@ -13,9 +13,6 @@ services:
       - "${HOST_PORT}:3306"
     volumes:
       - energy-mysql-volume:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # 초기 스크립트 파일
-    # entrypoint를 재정의하여 항상 초기화 스크립트를 실행하도록 설정합니다.
-    entrypoint: ["docker-entrypoint.sh", "--init-file", "/docker-entrypoint-initdb.d/init.sql"]
     networks:
       - energy-network
 
