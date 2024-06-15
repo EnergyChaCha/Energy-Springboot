@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.3.0
+    container_name: energy-mysql-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "${HOST_PORT}:3306"
+    volumes:
+      - energy-mysql-volume:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # 초기 스크립트 파일
+    # entrypoint를 재정의하여 항상 초기화 스크립트를 실행하도록 설정합니다.
+    entrypoint: ["docker-entrypoint.sh", "--init-file", "/docker-entrypoint-initdb.d/init.sql"]
+    networks:
+      - energy-network
+
+  redis:
+    image: redis:7.2.4
+    container_name: energy-redis-container
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    networks:
+      - energy-network
+    
+volumes:
+  energy-mysql-volume:
+
+networks:
+  energy-network:
+    external:
+      name: energy-network
