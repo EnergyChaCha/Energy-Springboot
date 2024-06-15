@@ -1,0 +1,52 @@
+spring:
+  profiles:
+    active: dev # 개발용
+  #    active: prod # 배포용
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${HOST_PORT}/${MYSQL_DATABASE}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    root: INFO
+  config: classpath:logback-spring.xml
+
+
+springdoc:
+  swagger-ui:
+    # config-url: /v3/api-docs/swagger-config
+    path: /docs
+
+
+
+# constants
+DOMAIN:
+  FRONT: ${FRONT_DOMAIN} # localhost:5173
+  BACK: ${BACK_DOMAIN} # http://localhost:8080
+
+secretKeyPlain: ${SECURE_KEY_PLAIN} # 시큐리티 키
