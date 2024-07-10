@@ -13,6 +13,7 @@ public class EnergyApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(EnergyApplication.class, args);
+        System.out.println("안녕");
     }
 
 }
