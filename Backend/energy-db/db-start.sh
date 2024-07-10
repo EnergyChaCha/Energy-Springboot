@@ -5,9 +5,9 @@
 export ENV_FILE_PATH="./.env"
 
 # Docker Compose가 실행 중인지 확인합니다.
-if docker-compose ps &> /dev/null; then
+if docker compose ps &> /dev/null; then
     # Docker Compose로 생성된 컨테이너들을 중지하고 삭제합니다.
-    docker-compose down
+    docker compose down
     echo "Docker Compose로 생성된 컨테이너들이 중지되고 삭제되었습니다."
 else
     echo "현재 Docker Compose로 생성된 컨테이너들이 없습니다."
@@ -24,7 +24,7 @@ else
 fi
 
 # Docker Compose 실행
-docker-compose -f docker-compose.yml --env-file $ENV_FILE_PATH up -d
+docker compose -f docker-compose.yml --env-file $ENV_FILE_PATH up -d
 
 
 echo "스크립트 끝"
