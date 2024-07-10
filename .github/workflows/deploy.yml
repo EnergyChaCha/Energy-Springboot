@@ -1,0 +1,105 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  
+  workflow_dispatch:
+    inputs:
+       logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+       tags:
+          description: 'Test scenario tags'
+          required: false
+      
+env:
+  S3_BUCKET_NAME: energy-springboot-deploy
+  CODE_DEPLOY_APPLICATION_NAME: energy-springboot-deploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: energy-springboot-prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: 🚀 저장소 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🚀 Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🚀 Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*',
+            '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: 🚀 Print GitHub Ref
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+  
+      - name: 🚀 Make application-secrets.properties
+        run: |
+          cd ./Backend/src/main/resources
+          touch ./application-secrets.properties
+          echo "${{ secrets.APPLICATION_SECRETS }}" > ./application-secrets.properties
+          
+      # 파일 없으면 빌드 에러
+      - uses: actions/upload-artifact@v3
+        with:
+          name: application-secrets.properties
+          path: ./Backend/src/main/resources/application-secrets.properties
+          if-no-files-found: 'error'
+          
+       
+      - name: 🚀 Grant execute permission for gradlew
+        run: chmod +x ./Backend/gradlew
+
+      - name: 🚀 Build with Gradle
+        run: |
+          cd ./Backend
+          ./gradlew clean build -x test
+        shell: bash
+
+      - name: 🚀 Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: 🚀 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+  
+      - name: 🚀 Upload to AWS S3
+        run: |
+          cd ./Backend
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/build/$GITHUB_SHA.zip \
+            --source .
+  
+      # S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
+      - name: 🚀 Deploy to AWS EC2 from S3
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=build/$GITHUB_SHA.zip,bundleType=zip
