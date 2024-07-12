@@ -1,5 +1,6 @@
 package com.chacha.energy.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,17 +23,21 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig {
 
     // private final TokenProvider tokenProvider;
 
     private final String FRONT_DOMAIN;
+    private final String BACK_DOMAIN;
 
-    public SecurityConfig(@Value("${DOMAIN.FRONT}") String frontDomain
+    public SecurityConfig(@Value("${DOMAIN.FRONT}") String frontDomain,
+                          @Value("${DOMAIN.BACK}") String backDomain
                           // ,TokenProvider tokenProvider
     ) {
 
         this.FRONT_DOMAIN = frontDomain;
+        this.BACK_DOMAIN = backDomain;
         // this.tokenProvider = tokenProvider;
     }
 
@@ -64,31 +69,24 @@ public class SecurityConfig {
         final String LOCALHOST = "localhost:";
 
         final String[] ALLOWED_HOSTS = new String[]{
-                LOCALHOST,
-                "127.0.0.1:"
+                LOCALHOST
         };
 
         final String[] PROTOCOLS = {"http://", "https://"};
 
-        final int DEFAULT_PORT = 80;
-        final int ALLOWED_MIN_PORT = 5173;
-        final int ALLOWED_MAX_PORT = 5175;
+        final int[] ALLOWED_PORTS = {80, 443, 8081, 8082, 8083};
 
         // 허용할 origin 목록
         List<String> allowedOrigins = new ArrayList<>();
         allowedOrigins.add(FRONT_DOMAIN);
+        allowedOrigins.add(BACK_DOMAIN);
+
 
         for (String protocol : PROTOCOLS) {
-
-            allowedOrigins.add(protocol + LOCALHOST + DEFAULT_PORT);
-
-            int allowedPort = ALLOWED_MIN_PORT;
-
-            while (allowedPort <= ALLOWED_MAX_PORT) {
-                for (String host : ALLOWED_HOSTS) {
-                    allowedOrigins.add(protocol + host + allowedPort);
+            for (String host: ALLOWED_HOSTS){
+                for (int port: ALLOWED_PORTS){
+                    allowedOrigins.add(protocol + host + port);
                 }
-                allowedPort += 1;
             }
         }
 
