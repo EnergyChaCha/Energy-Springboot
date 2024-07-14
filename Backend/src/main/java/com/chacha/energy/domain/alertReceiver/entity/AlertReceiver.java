@@ -23,12 +23,8 @@ public class AlertReceiver extends BaseEntity {
     @JoinColumn(name = "신고 받은 사람")
     private Member member;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     @ManyToOne
-    @JoinColumn(name = "신고 받은 사람")
+    @JoinColumn(name = "신고자")
     private Member receiver;
 
     @ManyToOne

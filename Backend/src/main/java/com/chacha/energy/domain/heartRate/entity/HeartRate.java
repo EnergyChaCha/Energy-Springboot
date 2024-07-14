@@ -18,11 +18,6 @@ public class HeartRate extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "심박수 생성 회원")
     private Member member;
-
-    private LocalDateTime createAt;
-
-    private LocalDateTime updateAt;
-
     @Column(name = "심박수")
     private int heartRate;
 

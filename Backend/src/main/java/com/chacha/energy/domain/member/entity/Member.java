@@ -3,11 +3,8 @@ package com.chacha.energy.domain.member.entity;
 import com.chacha.energy.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,13 +12,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "member")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Member extends BaseEntity {
 
-    private LocalDateTime createdTime;
-    private LocalDateTime updatedTime;
-
-    @Column(length = 20)
+    @Column(name = "role", length = 10)
     private String role;
 
     @Column(length = 255)
@@ -37,7 +32,7 @@ public class Member extends BaseEntity {
     private String password;
 
     @Column(length = 255)
-    private String work_area;
+    private String workArea;
 
     private Boolean gender;
 
@@ -47,9 +42,9 @@ public class Member extends BaseEntity {
     @Column(length = 255)
     private String department;
 
-    private int min_bpm_threshold;
+    private int minBpmThreshold;
 
-    private int max_bpm_threshold;
+    private int maxBpmThreshold;
 
     private LocalDate birthdate;
 

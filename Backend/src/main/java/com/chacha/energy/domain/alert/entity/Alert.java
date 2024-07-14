@@ -18,10 +18,6 @@ public class Alert extends BaseEntity {
     @JoinColumn(name = "임계치 초과한 사람", nullable = false)
     private Member member;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     @Column(name = "심박수")
     private Integer heartRate;
 

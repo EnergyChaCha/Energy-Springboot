@@ -27,10 +27,6 @@ public class Report extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "확인한 사람(관리자)")
     private Member confirmer;
-
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-
     @Column(name = "심박수")
     private Integer heartRate;
 

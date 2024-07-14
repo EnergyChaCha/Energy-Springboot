@@ -33,7 +33,7 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public AuthDto.AuthResponse generateTokenResponse(Authentication auth) {
+    public AuthDto.SignInResponse generateTokenResponse(Authentication auth) {
         long now = new Date().getTime();
 
         String accessToken = Jwts.builder()
@@ -48,8 +48,8 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return AuthDto.AuthResponse.builder()
-                .adminId(auth.getName())
+        return AuthDto.SignInResponse.builder()
+                .id(auth.getName())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

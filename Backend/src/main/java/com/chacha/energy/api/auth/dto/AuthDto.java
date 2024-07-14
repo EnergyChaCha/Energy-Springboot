@@ -1,10 +1,13 @@
 package com.chacha.energy.api.auth.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-public class AuthDto {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+public class AuthDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -48,4 +51,101 @@ public class AuthDto {
         private String name;
     }
 
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignUpRequest {
+        private String name;
+        private String loginId;
+        private String phone;
+        private String password;
+        private String workArea;
+        private Boolean gender;
+        private String address;
+        private String department;
+        private int minBpmThreshold;
+        private int maxBpmThreshold;
+        private LocalDate birthdate;
+        private String role;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignUpResponse {
+        private int id;
+        private String name;
+        private String loginId;
+        private String phone;
+        private String password;
+        private String workArea;
+        private Boolean gender;
+        private String address;
+        private String department;
+        private int minBpmThreshold;
+        private int maxBpmThreshold;
+        private LocalDate birthdate;
+        private String role;
+        private LocalDateTime createdTime;
+        private LocalDateTime updatedTime;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class RegisterHealthInfoRequest{
+        private String emergencyContact;
+        private String emergencyContactRelation;
+        private String underlyingConditions;
+        private String allergies;
+        private String medications;
+        private String bloodType;
+        private Boolean organDonor;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class RegisterHealthInfoResponse{
+        private int id;
+        private String emergencyContact;
+        private String emergencyContactRelation;
+        private String underlyingConditions;
+        private String allergies;
+        private String medications;
+        private String bloodType;
+        private Boolean organDonor;
+        private LocalDateTime createdTime;
+        private LocalDateTime updatedTime;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignInRequest{
+        private String loginId;
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignInResponse{
+        private String id;
+        private String accessToken;
+        private String refreshToken;
+    }
 }
