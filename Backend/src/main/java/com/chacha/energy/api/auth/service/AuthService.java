@@ -7,23 +7,20 @@ import com.chacha.energy.api.auth.repository.HealthRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.domain.admin.repository.AdminRepository;
-<<<<<<< Updated upstream
 import com.chacha.energy.domain.health.entity.Health;
-=======
->>>>>>> Stashed changes
 import com.chacha.energy.domain.member.entity.Member;
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< Updated upstream
 import java.time.LocalDateTime;
 
-=======
->>>>>>> Stashed changes
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,13 +31,9 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthMapper authMapper;
     private final MemberRepository memberRepository;
-<<<<<<< Updated upstream
     private final HealthRepository healthRepository;
 
     // AU-01 회원가입
-=======
-
->>>>>>> Stashed changes
     public String signUp(AuthDto.SignUpRequest authDto){
         String encodePassword = bCryptPasswordEncoder.encode(authDto.getPassword());
         authDto.setPassword(encodePassword);
@@ -48,19 +41,14 @@ public class AuthService {
             throw new CustomException(ErrorCode.SIGNUP_FAILED, authDto.getLoginId());
         }
 
-<<<<<<< Updated upstream
         Member member = authMapper.toEntity(authDto);
         member.setCreatedTime(LocalDateTime.now());
         member.setUpdatedTime(LocalDateTime.now());
-=======
-        Member member = memberRepository.toEntity(authDto);
->>>>>>> Stashed changes
         memberRepository.save(member);
         return member.getLoginId();
 
     }
 
-<<<<<<< Updated upstream
     // AU-02 아이디 중복확인
     public boolean isDuplicatedLoginId(String loginId){
         return memberRepository.existsByLoginId(loginId);
@@ -94,44 +82,6 @@ public class AuthService {
 
         return authResponse;
     }
-=======
-//    public String signup(AuthDto.@Valid Post authDto) {
-//        String encodePassword = bCryptPasswordEncoder.encode(authDto.getAdminPw());
-//        authDto.setAdminPw(encodePassword);
-//        if (adminRepository.findByAdminId(authDto.getAdminId()).isPresent()) {
-//            throw new CustomException(ErrorCode.SIGNUP_FAILED, authDto.getAdminId());
-//        }
-//        adminRepository.save(authMapper.AuthDtoToAdmin(authDto));
-//        return authDto.getAdminId();
-//    }
-
-//    @Transactional
-//    public AuthDto.AuthResponse signin(AuthDto.AuthRequest authDto) {
-//        Optional<Admin> adminOptional = adminRepository.findByAdminId(authDto.getAdminId());
-//
-//        Admin admin = null;
-//        if (adminOptional.isPresent()) {
-//            admin = adminOptional.get();
-//        }
-//
-//        if (!(admin != null && bCryptPasswordEncoder.matches(authDto.getAdminPw(), admin.getAdminPw()))) {
-//            throw new CustomException(ErrorCode.SIGNIN_FAILED, authDto.getAdminId());
-//        }
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(admin.getAdminId(), admin.getAdminPw());
-//        // SecurityContextHolder에 로그인 한 유저 정보 저장
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        AuthDto.AuthResponse authResponse = tokenProvider.generateTokenResponse(authentication);
-//
-//        authResponse.setName(admin.getName());
-//
-//        return authResponse;
-//    }
-//
-//    public boolean checkDuplicatedId(String loginId){
-//        return authMapper.existsByLoginId(loginId);
-//    }
->>>>>>> Stashed changes
 
 //    public String signup(AuthDto.@Valid Post authDto) {
 //        String encodePassword = bCryptPasswordEncoder.encode(authDto.getAdminPw());

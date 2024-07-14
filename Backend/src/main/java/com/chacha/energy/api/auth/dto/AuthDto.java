@@ -1,6 +1,5 @@
 package com.chacha.energy.api.auth.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -93,7 +92,6 @@ public class AuthDto {
         private String role;
         private LocalDateTime createdTime;
         private LocalDateTime updatedTime;
-<<<<<<< Updated upstream
     }
 
     @Getter
@@ -148,8 +146,5 @@ public class AuthDto {
         private String id;
         private String accessToken;
         private String refreshToken;
-=======
-
->>>>>>> Stashed changes
     }
 }

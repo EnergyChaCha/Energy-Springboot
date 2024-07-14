@@ -16,14 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Member extends BaseEntity {
 
-<<<<<<< Updated upstream
     @Column(name = "role", length = 10)
-=======
-    private LocalDateTime createdTime;
-    private LocalDateTime updatedTime;
-
-    @Column(name = "관리자인지 일반사용자인지", length = 3)
->>>>>>> Stashed changes
     private String role;
 
     @Column(length = 255)
