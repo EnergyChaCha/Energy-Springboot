@@ -39,7 +39,7 @@ public class ReportDto {
         /* TO-BE : JWT에서 ID를 가져올 수 있도록 수정해야 함 */
         private int reporterId;
         private int patientId;
-        private int status;
+        private String status;
         private int heartRate;
         private double latitude;
         private double longitude;

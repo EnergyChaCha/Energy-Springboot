@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class HeartStatus extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(name = "status")

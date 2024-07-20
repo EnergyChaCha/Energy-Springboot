@@ -17,16 +17,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Health extends BaseEntity {
     @OneToOne
-    @JoinColumn(name = "member")
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "emergencyContact", length = 30)
+    @Column(name = "emergency_contact", length = 30)
     private String emergencyContact;
 
-    @Column(name = "emergencyContactRelation", length = 30)
+    @Column(name = "emergency_contact_relation", length = 30)
     private String emergencyContactRelation;
 
-    @Column(name = "underlyingConditions")
+    @Column(name = "underlying_conditions")
     private String underlyingConditions;
 
     @Column(name = "allergies")
@@ -35,10 +35,10 @@ public class Health extends BaseEntity {
     @Column(name = "medications")
     private String medications;
 
-    @Column(name = "bloodType", length = 30)
+    @Column(name = "blood_type", length = 30)
     private String bloodType;
 
-    @Column(name = "organDonor")
+    @Column(name = "organ_donor")
     private Boolean organDonor;
 
 }

@@ -12,11 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    @Query("select new com.chacha.energy.api.report.dto.ResponseReportDto(r.id, r.reporter.id, r.patient.id, r.confirmer.id, r.status, r.heartRate, r.latitude, r.longitude)" +
+    @Query("select new com.chacha.energy.api.report.dto.ResponseReportDto(r.id, r.reporter.id, r.patient.id, r.confirmer.id, r.status, r.bpm, r.latitude, r.longitude)" +
             " from Report r WHERE r.createdTime >= :start AND r.createdTime <= :end")
     Page<ResponseReportDto> findAllByTime(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, Pageable pageable);
 
-    @Query("select new com.chacha.energy.api.report.dto.ResponseReportDto(r.id, r.reporter.id, r.patient.id, r.confirmer.id, r.status, r.heartRate, r.latitude, r.longitude) " +
+    @Query("select new com.chacha.energy.api.report.dto.ResponseReportDto(r.id, r.reporter.id, r.patient.id, r.confirmer.id, r.status, r.bpm, r.latitude, r.longitude) " +
             " from Report r WHERE (r.reporter.id = :id) AND (r.createdTime BETWEEN :start AND :end) ")
     Page<ResponseReportDto> findMyReportList(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("id") int id, Pageable pageable);
 }

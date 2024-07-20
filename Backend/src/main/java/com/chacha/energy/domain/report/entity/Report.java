@@ -4,9 +4,7 @@ import com.chacha.energy.common.entity.BaseEntity;
 import com.chacha.energy.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "report")
@@ -16,24 +14,27 @@ import java.time.LocalDateTime;
 public class Report extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "접수자(신고한 사람)")
+    @JoinColumn(name = "reporter_id")
+    @Comment("접수자(신고한 사람)")
     private Member reporter;
 
     @ManyToOne
-    @JoinColumn(name = "환자")
+    @JoinColumn(name = "patiend_id")
+    @Comment("환자")
     private Member patient;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "확인한 사람(관리자)")
+    @JoinColumn(name = "confirmer_id")
+    @Comment("확인한 사람(관리자)")
     private Member confirmer;
 
-    private Integer heartRate;
+    private Integer bpm;
 
     private Double latitude;
 
     private Double longitude;
 
-    private Integer status;
+    private String status;
 
 }
