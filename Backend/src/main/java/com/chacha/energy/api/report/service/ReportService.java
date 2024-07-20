@@ -1,13 +1,19 @@
 package com.chacha.energy.api.report.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
+import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.report.dto.ReportDto;
 import com.chacha.energy.api.report.dto.ResponseReportDto;
+import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
+import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
+import com.chacha.energy.domain.member.entity.Role;
+import com.chacha.energy.domain.member.service.MemberService;
 import com.chacha.energy.domain.report.entity.Report;
+import com.chacha.energy.domain.reportReceiver.entity.ReportReceiver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +36,9 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final HeartRateRepository heartRateRepository;
+    private final ReportReceiverRepository reportReceiverRepository;
 
     public LocalDateTime convertStringToTime(String time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -50,7 +60,7 @@ public class ReportService {
 
     public ResponseReportDto getReportDto(Report report) {
         return ResponseReportDto.builder()
-                .id(report.getId())
+                .reportId(report.getId())
                 .reporterId(report.getReporter().getId())
                 .patientId(report.getPatient().getId())
                 .confirmerId(report.getConfirmer() != null ? report.getConfirmer().getId() : 0)
@@ -81,22 +91,32 @@ public class ReportService {
     }
 
     public ResponseReportDto report(ReportDto.RequestReport reportDto) {
-        /* TO-BE : JWT에서 ID를 가져올 수 있도록 수정해야 함 */
-        Member reporter = memberRepository.findById(reportDto.getReporterId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NO_ID, reportDto.getReporterId())
-        );
+        Member reporter = memberService.getLoginMember();
 
         Member patient = memberRepository.findById(reportDto.getPatientId()).orElseThrow(
                 () -> new CustomException(ErrorCode.NO_ID, reportDto.getPatientId())
         );
 
+        Optional<Integer> heartRate = heartRateRepository.findLatestBpmWithin5Minutes(patient.getId());
+        // TODO: 신고 상황에서 워치를 안 쓰고 있던 환자가 있을 수도 있다
+        int bpm = -1;
+        if (heartRate.isPresent()) {
+            bpm = heartRate.get();
+        }
+
         Report report = new Report(
-                reporter, patient, null, reportDto.getHeartRate(),
+                reporter, patient, null, bpm,
                 reportDto.getLatitude(), reportDto.getLongitude(),
                 reportDto.getStatus()
         );
+        report = reportRepository.save(report);
 
-        reportRepository.save(report);
+        List<Member> admins = memberRepository.findAllByRole(Role.ADMIN.name());
+
+        for(Member admin: admins) {
+            ReportReceiver reportReceiver= ReportReceiver.builder().report(report).member(admin).build();
+            reportReceiverRepository.save(reportReceiver);
+        }
 
         return getReportDto(report);
     }

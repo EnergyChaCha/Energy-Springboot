@@ -9,6 +9,7 @@ import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.domain.health.entity.Health;
 import com.chacha.energy.domain.member.entity.Member;
 import com.chacha.energy.api.auth.repository.MemberRepository;
+import com.chacha.energy.domain.member.entity.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +50,10 @@ public class AuthService {
         Member member = authMapper.toEntity(authDto);
         member.setCreatedTime(LocalDateTime.now());
         member.setUpdatedTime(LocalDateTime.now());
+        member.setRole(Role.ADMIN.name());
+        if (memberRepository.count() > 0L) {
+            member.setRole(Role.USER.name());
+        }
         memberRepository.save(member);
         return member.getLoginId();
 
@@ -85,44 +90,11 @@ public class AuthService {
 
         AuthDto.SignInResponse authResponse = tokenProvider.generateTokenResponse(authentication);
 
+        authResponse.setIsAdmin(false);
+        if (member.getRole().equals(Role.ADMIN.name())) {
+            authResponse.setIsAdmin(true);
+        }
+
         return authResponse;
     }
-
-//    public String signup(AuthDto.@Valid Post authDto) {
-//        String encodePassword = bCryptPasswordEncoder.encode(authDto.getAdminPw());
-//        authDto.setAdminPw(encodePassword);
-//        if (adminRepository.findByAdminId(authDto.getAdminId()).isPresent()) {
-//            throw new CustomException(ErrorCode.SIGNUP_FAILED, authDto.getAdminId());
-//        }
-//        adminRepository.save(authMapper.AuthDtoToAdmin(authDto));
-//        return authDto.getAdminId();
-//    }
-
-//    @Transactional
-//    public AuthDto.AuthResponse signin(AuthDto.AuthRequest authDto) {
-//        Optional<Admin> adminOptional = adminRepository.findByAdminId(authDto.getAdminId());
-//
-//        Admin admin = null;
-//        if (adminOptional.isPresent()) {
-//            admin = adminOptional.get();
-//        }
-//
-//        if (!(admin != null && bCryptPasswordEncoder.matches(authDto.getAdminPw(), admin.getAdminPw()))) {
-//            throw new CustomException(ErrorCode.SIGNIN_FAILED, authDto.getAdminId());
-//        }
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(admin.getAdminId(), admin.getAdminPw());
-//        // SecurityContextHolder에 로그인 한 유저 정보 저장
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        AuthDto.AuthResponse authResponse = tokenProvider.generateTokenResponse(authentication);
-//
-//        authResponse.setName(admin.getName());
-//
-//        return authResponse;
-//    }
-//
-//    public boolean checkDuplicatedId(String loginId){
-//        return authMapper.existsByLoginId(loginId);
-//    }
-
 }

@@ -1,5 +1,7 @@
 package com.chacha.energy.common.config;
 
+import com.chacha.energy.api.auth.jwt.JwtFilter;
+import com.chacha.energy.api.auth.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,19 +29,19 @@ import java.util.List;
 @Slf4j
 public class SecurityConfig {
 
-    // private final TokenProvider tokenProvider;
+     private final TokenProvider tokenProvider;
 
     private final String FRONT_DOMAIN;
     private final String BACK_DOMAIN;
 
     public SecurityConfig(@Value("${DOMAIN.FRONT}") String frontDomain,
-                          @Value("${DOMAIN.BACK}") String backDomain
-                          // ,TokenProvider tokenProvider
+                          @Value("${DOMAIN.BACK}") String backDomain,
+                          TokenProvider tokenProvider
     ) {
 
         this.FRONT_DOMAIN = frontDomain;
         this.BACK_DOMAIN = backDomain;
-        // this.tokenProvider = tokenProvider;
+         this.tokenProvider = tokenProvider;
     }
 
     @Bean
@@ -56,8 +59,8 @@ public class SecurityConfig {
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-        // .addFilterAfter(new JwtFilter(tokenProvider),
-        // 	UsernamePasswordAuthenticationFilter.class)
+         .addFilterAfter(new JwtFilter(tokenProvider),
+         	UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();

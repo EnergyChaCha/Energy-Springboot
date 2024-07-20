@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseReportDto {
-    private int id;
+    private int reportId;
     private int reporterId;
     private int patientId;
     private int confirmerId;
