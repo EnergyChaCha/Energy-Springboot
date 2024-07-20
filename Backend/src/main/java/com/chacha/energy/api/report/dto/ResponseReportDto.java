@@ -12,7 +12,7 @@ public class ResponseReportDto {
     private int reporterId;
     private int patientId;
     private int confirmerId;
-    private int status;
+    private String status;
     private int heartRate;
     private double latitude;
     private double longitude;

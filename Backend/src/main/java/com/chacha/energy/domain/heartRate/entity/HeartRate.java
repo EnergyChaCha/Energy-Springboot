@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "heart_rate")
@@ -15,12 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HeartRate extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "심박수 생성 회원")
-    private Member member;
-    @Column(name = "heartRate")
-    private int heartRate;
 
-    @Column(name = "exceedsThreshold")
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    @Comment("심박수 생성 회원")
+    private Member member;
+    @Column(name = "bpm")
+    private int bpm;
+
+    @Column(name = "exceeds_threshold")
     private Boolean exceedsThreshold;
 }

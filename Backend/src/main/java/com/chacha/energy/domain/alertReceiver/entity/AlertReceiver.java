@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
@@ -20,15 +21,13 @@ import java.time.LocalDateTime;
 public class AlertReceiver extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "신고 받은 사람")
+    @JoinColumn(name = "member_id")
+    @Comment("알림 받은 사람")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "신고자")
-    private Member receiver;
-
-    @ManyToOne
-    @JoinColumn(name = "임계치 초과 알림 내용")
+    @JoinColumn(name = "alert_id")
+    @Comment("임계치 초과 알림 내용")
     private Alert alert;
 
 }

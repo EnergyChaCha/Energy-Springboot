@@ -23,11 +23,11 @@ public enum ErrorCode {
     INVALID_SIGNATURE_TOKEN(UNAUTHORIZED, "서명이 유효하지 않습니다."),
     UNSUPPORTED_JWT(UNAUTHORIZED, "지원하지 않는 JWT 기능이 사용되었습니다."),
 
-    // Admin
-    ADMIN_NOT_FOUND(BAD_REQUEST, "어드민이 존재하지 않습니다."),
+    // Member
+    MEMBER_NOT_FOUND(BAD_REQUEST, "어드민이 존재하지 않습니다."),
     SIGNUP_FAILED(BAD_REQUEST, "이미 존재하는 회원인지 확인해주세요"),
     SIGNIN_FAILED(BAD_REQUEST, "아이디와 비밀번호를 확인해주세요."),
-    ADMIN_NOT_FOUND_WITH_TOKEN(INTERNAL_SERVER_ERROR, "토큰인증을 하지 않는 곳에서 로그인한 멤버를 찾으려고 했습니다. [백엔드에 알려주세요]"),
+    MEMBER_NOT_FOUND_WITH_TOKEN(INTERNAL_SERVER_ERROR, "토큰인증을 하지 않는 곳에서 로그인한 멤버를 찾으려고 했습니다. [백엔드에 알려주세요]"),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
