@@ -90,44 +90,11 @@ public class AuthService {
 
         AuthDto.SignInResponse authResponse = tokenProvider.generateTokenResponse(authentication);
 
+        authResponse.setIsAdmin(false);
+        if (member.getRole().equals(Role.ADMIN.name())) {
+            authResponse.setIsAdmin(true);
+        }
+
         return authResponse;
     }
-
-//    public String signup(AuthDto.@Valid Post authDto) {
-//        String encodePassword = bCryptPasswordEncoder.encode(authDto.getAdminPw());
-//        authDto.setAdminPw(encodePassword);
-//        if (adminRepository.findByAdminId(authDto.getAdminId()).isPresent()) {
-//            throw new CustomException(ErrorCode.SIGNUP_FAILED, authDto.getAdminId());
-//        }
-//        adminRepository.save(authMapper.AuthDtoToAdmin(authDto));
-//        return authDto.getAdminId();
-//    }
-
-//    @Transactional
-//    public AuthDto.AuthResponse signin(AuthDto.AuthRequest authDto) {
-//        Optional<Admin> adminOptional = adminRepository.findByAdminId(authDto.getAdminId());
-//
-//        Admin admin = null;
-//        if (adminOptional.isPresent()) {
-//            admin = adminOptional.get();
-//        }
-//
-//        if (!(admin != null && bCryptPasswordEncoder.matches(authDto.getAdminPw(), admin.getAdminPw()))) {
-//            throw new CustomException(ErrorCode.SIGNIN_FAILED, authDto.getAdminId());
-//        }
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(admin.getAdminId(), admin.getAdminPw());
-//        // SecurityContextHolder에 로그인 한 유저 정보 저장
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        AuthDto.AuthResponse authResponse = tokenProvider.generateTokenResponse(authentication);
-//
-//        authResponse.setName(admin.getName());
-//
-//        return authResponse;
-//    }
-//
-//    public boolean checkDuplicatedId(String loginId){
-//        return authMapper.existsByLoginId(loginId);
-//    }
-
 }

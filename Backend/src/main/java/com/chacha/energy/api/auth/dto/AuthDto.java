@@ -146,5 +146,6 @@ public class AuthDto {
         private String id;
         private String accessToken;
         private String refreshToken;
+        private Boolean isAdmin;
     }
 }
