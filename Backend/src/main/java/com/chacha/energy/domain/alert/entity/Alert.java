@@ -1,4 +1,4 @@
-package com.chacha.energy.domain.report.entity;
+package com.chacha.energy.domain.alert.entity;
 
 import com.chacha.energy.common.entity.BaseEntity;
 import com.chacha.energy.domain.member.entity.Member;
@@ -6,27 +6,18 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "heart_rate")
+@Table(name = "alert")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report extends BaseEntity {
-
+public class Alert extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "접수자(신고한 사람)")
-    private Member reporter;
+    @JoinColumn(name = "임계치 초과한 사람", nullable = false)
+    private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "환자")
-    private Member patient;
-
-    @ManyToOne
-    @JoinColumn(name = "확인한 사람(관리자)")
-    private Member confirmer;
     @Column(name = "심박수")
     private Integer heartRate;
 
@@ -36,8 +27,6 @@ public class Report extends BaseEntity {
     @Column(name = "경도")
     private Double longitude;
 
+    @Column(name = "주소")
     private String address;
-
-    private String status;
-
 }

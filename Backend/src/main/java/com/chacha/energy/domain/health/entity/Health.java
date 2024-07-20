@@ -1,0 +1,44 @@
+package com.chacha.energy.domain.health.entity;
+
+import com.chacha.energy.common.entity.BaseEntity;
+import com.chacha.energy.domain.member.entity.Member;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "health")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+public class Health extends BaseEntity {
+    @OneToOne
+    @JoinColumn(name = "member")
+    private Member member;
+
+    @Column(name = "emergencyContact", length = 30)
+    private String emergencyContact;
+
+    @Column(name = "emergencyContactRelation", length = 30)
+    private String emergencyContactRelation;
+
+    @Column(name = "underlyingConditions")
+    private String underlyingConditions;
+
+    @Column(name = "allergies")
+    private String allergies;
+
+    @Column(name = "medications")
+    private String medications;
+
+    @Column(name = "bloodType", length = 30)
+    private String bloodType;
+
+    @Column(name = "organDonor")
+    private Boolean organDonor;
+
+}
