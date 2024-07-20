@@ -21,6 +21,8 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("select m from Member m WHERE m.name = :name AND m.workArea = :workArea")
     List<Member> findAllByNameAndWorkArea(@Param("name") String name, @Param("workArea") String workArea);
 
+    List<Member> findAllByRole(String role);
+
 //    @Query("SELECT "+" new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateAvg(m.minBpmThreshold, m.maxBpmThreshold, AVG(m.minBpmThreshold+m.maxBpmThreshold))" +
 //            "FROM Member m  WHERE m.createdTime BETWEEN :start AND :end")
 //    HeartRateDto.GetHeartRateAvg getHeartRateStatsBetweenDates(

@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -30,4 +31,9 @@ public class ReportReceiver extends BaseEntity {
     @Comment("신고 내용")
     private Report report;
 
+    @Builder
+    public ReportReceiver(Member member, Report report) {
+        this.member = member;
+        this.report = report;
+    }
 }
