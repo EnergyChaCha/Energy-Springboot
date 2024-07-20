@@ -36,11 +36,8 @@ public class ReportDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestReport {
-        /* TO-BE : JWT에서 ID를 가져올 수 있도록 수정해야 함 */
-        private int reporterId;
         private int patientId;
         private String status;
-        private int heartRate;
         private double latitude;
         private double longitude;
     }

@@ -16,4 +16,7 @@ public interface HeartRateRepository extends JpaRepository<Member, Integer> {
     @Query("SELECT hr FROM HeartRate hr WHERE hr.member.id = :memberId ORDER BY hr.createdTime DESC")
     Optional<HeartRate> findLatestByMemberId(@Param("memberId") Integer memberId);
 
+    @Query(value = """
+            SELECT h.bpm FROM heart_rate h WHERE h.member_id = :memberId AND h.created_time >= CURRENT_TIMESTAMP - INTERVAL '5 minutes' AND h.created_time <= CURRENT_TIMESTAMP ORDER BY h.created_time DESC limit 1""",  nativeQuery = true)
+    Optional<Integer> findLatestBpmWithin5Minutes(@Param("memberId") Integer memberId);
 }
