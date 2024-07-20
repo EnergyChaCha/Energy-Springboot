@@ -16,14 +16,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Member getLoginMember() throws CustomException {
-        // 현재 로그인한 유저의 loginId(pk말고 로그인할 때 쓰는 id)를 반환
+        // 현재 로그인한 유저의 memberId(pk)를 반환
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         if (authentication.equalsIgnoreCase("AnonymousUser")) {
             // 토큰 인증이 필요 없는 uri에서 해당 메서드 호출 할 경우 발생
             // JwtFilter에서 토큰 인증이 필요 없는 uri 목록 확인할 것
             throw new CustomException(ErrorCode.MEMBER_NOT_FOUND_WITH_TOKEN);
         }
-        return memberRepository.findByLoginId(authentication).orElseThrow(() -> new CustomException(
+        return memberRepository.findById(Integer.parseInt(authentication)).orElseThrow(() -> new CustomException(
                 ErrorCode.MEMBER_NOT_FOUND, authentication));
     }
 
