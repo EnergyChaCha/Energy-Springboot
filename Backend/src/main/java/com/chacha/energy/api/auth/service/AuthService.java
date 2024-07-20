@@ -33,6 +33,13 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final HealthRepository healthRepository;
 
+    public Member getMemberById(int id) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                ()-> new CustomException(ErrorCode.NO_ID, id)
+        );
+        return member;
+    }
+
     // AU-01 회원가입
     public String signUp(AuthDto.SignUpRequest authDto){
         String encodePassword = bCryptPasswordEncoder.encode(authDto.getPassword());

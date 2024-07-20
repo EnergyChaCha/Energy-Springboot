@@ -18,9 +18,9 @@ public class HeartRate extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "심박수 생성 회원")
     private Member member;
-    @Column(name = "심박수")
+    @Column(name = "heartRate")
     private int heartRate;
 
-    @Column(name = "임계치 초과했는지")
+    @Column(name = "exceedsThreshold")
     private Boolean exceedsThreshold;
 }
