@@ -6,17 +6,12 @@ import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
-import com.chacha.energy.domain.heartStatus.entity.HeartStatus;
 import com.chacha.energy.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +70,7 @@ public class HeartService {
                 .name(member.getName())
                 .birthdate(member.getBirthdate())
                 .gender(member.getGender())
-                .status(latestHeartRate != null ? latestHeartRate.getHeartRate() : 0)
+                .status(latestHeartRate != null ? latestHeartRate.getBpm() : 0)
                 .phone(member.getPhone())
                 .loginId(member.getLoginId())
                 .workArea(member.getWorkArea())

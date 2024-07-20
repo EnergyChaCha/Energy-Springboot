@@ -6,7 +6,6 @@ import com.chacha.energy.api.auth.mapper.AuthMapper;
 import com.chacha.energy.api.auth.repository.HealthRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
-import com.chacha.energy.domain.admin.repository.AdminRepository;
 import com.chacha.energy.domain.health.entity.Health;
 import com.chacha.energy.domain.member.entity.Member;
 import com.chacha.energy.api.auth.repository.MemberRepository;
@@ -26,7 +25,6 @@ import java.time.LocalDateTime;
 @Slf4j
 @Transactional
 public class AuthService {
-    private final AdminRepository adminRepository;
     private final TokenProvider tokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthMapper authMapper;

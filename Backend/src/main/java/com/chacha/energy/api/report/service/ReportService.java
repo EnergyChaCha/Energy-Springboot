@@ -54,7 +54,7 @@ public class ReportService {
                 .reporterId(report.getReporter().getId())
                 .patientId(report.getPatient().getId())
                 .confirmerId(report.getConfirmer() != null ? report.getConfirmer().getId() : 0)
-                .heartRate(report.getHeartRate())
+                .heartRate(report.getBpm())
                 .latitude(report.getLatitude())
                 .longitude(report.getLongitude())
                 .status(report.getStatus())

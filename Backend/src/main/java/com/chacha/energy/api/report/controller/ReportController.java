@@ -51,7 +51,7 @@ public class ReportController {
         return ApiResponse.success(SuccessCode.POST_SUCCESS, reportService.confirm(confirmDto));
     }
 
-    @Operation(summary = "RE-01 신고", description = "")
+    @Operation(summary = "RE-01 다른 사람 신고", description = "")
     @PostMapping("/")
     public ApiResponse<ResponseReportDto> report(@Valid @RequestBody ReportDto.RequestReport reportDto){
         return ApiResponse.success(SuccessCode.POST_SUCCESS, reportService.report(reportDto));
