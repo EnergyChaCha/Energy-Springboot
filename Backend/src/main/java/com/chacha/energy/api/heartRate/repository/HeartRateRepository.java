@@ -51,12 +51,12 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
 
     // HI-04
 //    @Query("SELECT new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateAvg(" +
-//            "MIN(h.bpm), MAX(h.bpm), AVG(h.bpm)) " +
+//            "MIN(h.bpm), MAX(h.bpm), CAST(AVG(h.bpm) AS double)) " +
 //            "FROM HeartRate h " +
 //            "WHERE h.member.id = :memberId " +
 //            "AND h.createdTime BETWEEN :start AND :end")
 //    HeartRateDto.GetHeartRateAvg findHeartRateStatistics(
-//            @Param("memberId") Long memberId,
+//            @Param("memberId") Integer memberId,
 //            @Param("start") LocalDateTime start,
 //            @Param("end") LocalDateTime end);
 
@@ -86,4 +86,5 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
             @Param("end") LocalDateTime end,
             @Param("heartrateStatus") String heartrateStatus,
             @Param("loginId") String loginId);
+
 }

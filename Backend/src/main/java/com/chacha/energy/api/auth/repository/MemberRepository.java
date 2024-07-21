@@ -23,10 +23,4 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     List<Member> findAllByRole(String role);
 
-//    @Query("SELECT "+" new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateAvg(m.minBpmThreshold, m.maxBpmThreshold, AVG(m.minBpmThreshold+m.maxBpmThreshold))" +
-//            "FROM Member m  WHERE m.createdTime BETWEEN :start AND :end")
-//    HeartRateDto.GetHeartRateAvg getHeartRateStatsBetweenDates(
-//            @Param("start") LocalDateTime start,
-//            @Param("end") LocalDateTime end
-//    );
 }

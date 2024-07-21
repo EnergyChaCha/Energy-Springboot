@@ -148,4 +148,20 @@ public class AuthDto {
         private String refreshToken;
         private Boolean isAdmin;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetDetailMemberHeartrateResponse{
+        private String name;
+        private LocalDate birthdate;
+        private Boolean gender;
+        private int status;
+        private String phone;
+        private String loginId;
+        private String workArea;
+        private String department;
+
+    }
 }
