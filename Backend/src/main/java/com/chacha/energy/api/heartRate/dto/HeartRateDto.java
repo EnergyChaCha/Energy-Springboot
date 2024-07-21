@@ -56,23 +56,6 @@ public class HeartRateDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class GetHeartRateListDto {
-        private String id;
-        private String name;
-        private String phone;
-        private String loginId;
-        private int minBpm;
-        private int maxBpm;
-        private int averageBpm;
-        private int minThreshold;
-        private int maxThreshold;
-        private String heartrateStatus;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class PostHearRateRequest {
         private int bpm;
     }

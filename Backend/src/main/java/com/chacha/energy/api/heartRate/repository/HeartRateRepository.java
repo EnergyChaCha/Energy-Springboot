@@ -2,6 +2,7 @@ package com.chacha.energy.api.heartRate.repository;
 
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.heartStatus.entity.HeartStatus;
 import com.chacha.energy.domain.member.entity.Member;
@@ -25,51 +26,54 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
     Optional<Integer> findLatestBpmWithin5Minutes(@Param("memberId") Integer memberId);
 
 
+    // HI-01
+
     @Query(value =
-            "SELECT new com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto(" +
-                    "cast(hb.bucket as text), hb.minBpm, hb.maxBpm, hb.avgBpm) " +
+            "SELECT " +
+                    "cast(hb.bucket as text) as date, hb.minBpm as minimumBpm, hb.maxBpm as maximumBpm, hb.avgBpm as averageBpm " +
                     "FROM (" +
-                    "SELECT time_bucket('1 hour', h.createdTime) bucket, " +
+                    "SELECT time_bucket(cast((:itv || ' hour') as interval), h.created_time) bucket, " +
                     "MIN(h.bpm) minBpm, MAX(h.bpm) maxBpm, AVG(h.bpm) avgBpm " +
-                    "FROM HeartRate h " +
-                    "WHERE (h.createdTime BETWEEN :start AND :end) AND (h.member.id) = :id " +
+                    "FROM heart_rate h " +
+                    "WHERE (h.created_time BETWEEN :start AND :end) AND (h.member_id) = :id " +
                     "GROUP BY bucket " +
                     "ORDER BY bucket" +
                     ") hb " +
-                    "ORDER BY hb.bucket"
+                    "ORDER BY hb.bucket",
+            nativeQuery = true
     )
     List<ResponseHeartRateDto> findHeartRateStatistics(
             @Param("id") Integer id,
             @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
+            @Param("end") LocalDateTime end,
+            @Param("itv") String itv);
 
 
-//    @Query("SELECT new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateListDto(" +
-//            "m.id, m.name, m.phone, m.loginId, " +
-//            "MIN(h.bpm), MAX(h.bpm), ROUND(AVG(h.bpm)), " +
-//            "m.minBpmThreshold, m.maxBpmThreshold, " +
-//            "CASE " +
-//            "   WHEN AVG(h.bpm) > m.maxBpmThreshold THEN 'emergency' " +
-//            "   WHEN AVG(h.bpm) < m.minBpmThreshold THEN 'emergency' " +
-//            "   WHEN AVG(h.bpm) > m.maxBpmThreshold - 10 THEN 'caution' " +
-//            "   WHEN AVG(h.bpm) < m.minBpmThreshold + 10 THEN 'caution' " +
-//            "   ELSE 'stable' " +
-//            "END) " +
-//            "FROM HeartRate h JOIN h.member m " +
-//            "WHERE h.createdTime BETWEEN :start AND :end " +
-//            "AND (:heartrateStatus IS NULL OR :heartrateStatus = " +
-//            "    CASE " +
-//            "       WHEN AVG(h.bpm) > m.maxBpmThreshold THEN 'emergency' " +
-//            "       WHEN AVG(h.bpm) < m.minBpmThreshold THEN 'emergency' " +
-//            "       WHEN AVG(h.bpm) > m.maxBpmThreshold - 10 THEN 'caution' " +
-//            "       WHEN AVG(h.bpm) < m.minBpmThreshold + 10 THEN 'caution' " +
-//            "       ELSE 'stable' " +
-//            "    END) " +
-//            "AND (:loginId IS NULL OR m.loginId = :loginId) " +
-//            "GROUP BY m.id, m.name, m.phone, m.loginId, m.minBpmThreshold, m.maxBpmThreshold")
-//    List<HeartRateDto.GetHeartRateListDto> findAllHeartRateThresholds(
+    // HI-04
+//    @Query("SELECT new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateAvg(" +
+//            "MIN(h.bpm), MAX(h.bpm), AVG(h.bpm)) " +
+//            "FROM HeartRate h " +
+//            "WHERE h.member.id = :memberId " +
+//            "AND h.createdTime BETWEEN :start AND :end")
+//    HeartRateDto.GetHeartRateAvg findHeartRateStatistics(
+//            @Param("memberId") Long memberId,
 //            @Param("start") LocalDateTime start,
-//            @Param("end") LocalDateTime end,
-//            @Param("heartrateStatus") String heartrateStatus,
-//            @Param("loginId") String loginId);
+//            @Param("end") LocalDateTime end);
+
+    // HI-02
+    @Query("SELECT new com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto(" +
+            "h.id, m.name, m.phone, m.loginId, " +
+            "h.bpm, (m.minBpmThreshold + m.maxBpmThreshold)/2, "+
+            "m.minBpmThreshold, m.maxBpmThreshold, h.heartStatus) " +
+            "FROM HeartRate h " +
+            "LEFT JOIN Member m ON h.member.id =  m.id " +
+            "WHERE (h.createdTime BETWEEN :start AND :end) " +
+            "AND (:loginId IS NULL OR m.loginId = :loginId) " +
+            "AND (:heartrateStatus IS NULL OR h.heartStatus = :heartrateStatus)" +
+            "GROUP BY h.id, m.name, m.phone, m.loginId, m.minBpmThreshold, m.maxBpmThreshold, h.heartStatus" )
+    List<ResponseListHeartRateDto> findAllHeartRateThresholds(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            @Param("heartrateStatus") String heartrateStatus,
+            @Param("loginId") String loginId);
 }
