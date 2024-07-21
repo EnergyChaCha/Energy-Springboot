@@ -25,4 +25,7 @@ public class HeartRate extends BaseEntity {
 
     @Column(name = "exceeds_threshold")
     private Boolean exceedsThreshold;
+
+    @Column(name = "heart_status")
+    private String heartStatus;
 }
