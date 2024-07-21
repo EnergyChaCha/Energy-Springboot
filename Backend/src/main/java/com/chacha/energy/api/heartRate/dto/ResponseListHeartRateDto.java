@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseListHeartRateDto {
-    private int id;
+    private Integer id; // member id
     private String name;
     private String phone;
     private String loginId;
-    private int bpm;
-    private double averageThreshold;
-    private int minThreshold;
-    private int maxThreshold;
+    private Integer bpm;
+    private Double averageThreshold;
+    private Integer minThreshold;
+    private Integer maxThreshold;
     private String heartrateStatus;
 }
