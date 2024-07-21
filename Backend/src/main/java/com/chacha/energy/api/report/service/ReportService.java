@@ -2,8 +2,10 @@ package com.chacha.energy.api.report.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
+import com.chacha.energy.api.report.constant.ReportFlagInfo;
 import com.chacha.energy.api.report.dto.ReportDto;
 import com.chacha.energy.api.report.dto.ResponseReportDto;
+import com.chacha.energy.api.report.dto.ResponseReportFlagInfoDto;
 import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.common.costants.ErrorCode;
@@ -27,6 +29,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.chacha.energy.api.report.constant.ReportFlagInfo.SEND;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +68,7 @@ public class ReportService {
                 .reporterId(report.getReporter().getId())
                 .patientId(report.getPatient().getId())
                 .confirmerId(report.getConfirmer() != null ? report.getConfirmer().getId() : 0)
-                .heartRate(report.getBpm())
+                .bpm(report.getBpm())
                 .latitude(report.getLatitude())
                 .longitude(report.getLongitude())
                 .status(report.getStatus())
@@ -77,7 +81,9 @@ public class ReportService {
         return getReportDto(report);
     }
 
-    public Page<ResponseReportDto> getMyReportList(ReportDto.RequestMyReportList getReportDto) {
+    public ReportDto.ResponseMyReportList getMyReportList(ReportDto.RequestMyReportList getReportDto) {
+        Member member = memberService.getLoginMember();
+
         System.out.println("Hi :" + getReportDto.getSize());
         PageRequest pageRequest = PageRequest.of(getReportDto.getPage(), getReportDto.getSize());
 
@@ -86,8 +92,58 @@ public class ReportService {
 
         System.out.println(startTime + " " + endTime);
 
-        /* TO-BE : JWT에서 ID를 가져올 수 있도록 수정해야 함 */
-        return reportRepository.findMyReportList(startTime, endTime, getReportDto.getId(), pageRequest);
+        // TODO: 페이지네이션
+        Page<ResponseReportFlagInfoDto> dtos = reportRepository.findEveryMyReportList(startTime, endTime, member.getId(), pageRequest);
+
+
+
+        ReportDto.ResponseMyReportList result = new ReportDto.ResponseMyReportList();
+
+
+        for (ResponseReportFlagInfoDto dto: dtos.getContent()) {
+            int dtoFlag = ReportFlagInfo.ALL.code;
+            if (dto.getPatientId().equals(dto.getReporterId()) && member.getId().equals(dto.getPatientId())) {
+                dtoFlag = ReportFlagInfo.SELF.code;
+            }
+            else if (member.getId().equals(dto.getReporterId())) {
+                dtoFlag = ReportFlagInfo.SEND.code;
+            }
+            else if (member.getId().equals(dto.getPatientId())) {
+                dtoFlag = ReportFlagInfo.RECEIVE.code;;
+            } else {
+                log.error("getMyReportList dtoFlag 분기처리 에러");
+            }
+
+
+            // 본인 신고
+            if (dtoFlag == ReportFlagInfo.SELF.code && (getReportDto.getFlag() == ReportFlagInfo.SELF.code || getReportDto.getFlag() == ReportFlagInfo.ALL.code) ) {
+                ReportDto.ResponseFlagInfo flagInfo = new ReportDto.ResponseFlagInfo();
+                ReportDto.ResponseMyReportItem reportItem = new ReportDto.ResponseMyReportItem(dto, ReportFlagInfo.SELF.name, flagInfo);
+                result.getReport().add(reportItem);
+            } else if (dtoFlag == ReportFlagInfo.SEND.code && (getReportDto.getFlag() == ReportFlagInfo.SEND.code || getReportDto.getFlag() == ReportFlagInfo.ALL.code) ) {
+                // 보낸 신고
+                ReportDto.ResponseFlagInfo flagInfo = ReportDto.ResponseFlagInfo.builder()
+                        .name(dto.getPatientName())
+                        .gender(dto.getPatientGender())
+                        .workArea(dto.getPatientWorkArea())
+                        .department(dto.getPatientDepartment())
+                        .status(dto.getPatientStatus())
+                        .build();
+                ReportDto.ResponseMyReportItem reportItem = new ReportDto.ResponseMyReportItem(dto, ReportFlagInfo.SEND.name, flagInfo);
+                result.getReport().add(reportItem);
+            }
+            else if (dtoFlag == ReportFlagInfo.RECEIVE.code && (getReportDto.getFlag() == ReportFlagInfo.RECEIVE.code || getReportDto.getFlag() == ReportFlagInfo.ALL.code) ) {
+                // 받은 신고
+                ReportDto.ResponseFlagInfo flagInfo = new ReportDto.ResponseFlagInfo();
+                ReportDto.ResponseMyReportItem reportItem = new ReportDto.ResponseMyReportItem(dto, ReportFlagInfo.RECEIVE.name, flagInfo);
+                result.getReport().add(reportItem);
+            } else {
+                log.error("getMyReportList 데이터 넣기 분기처리 에러");
+            }
+        }
+
+        return result;
+
     }
 
     public ResponseReportDto report(ReportDto.RequestReport reportDto) {

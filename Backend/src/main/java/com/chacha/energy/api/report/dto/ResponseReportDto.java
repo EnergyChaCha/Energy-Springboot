@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseReportDto {
-    private int reportId;
-    private int reporterId;
-    private int patientId;
-    private int confirmerId;
+    private Integer reportId;
+    private Integer reporterId;
+    private Integer patientId;
+    private Integer confirmerId;
     private String status;
-    private int heartRate;
-    private double latitude;
-    private double longitude;
+    private Integer bpm;
+    private Double latitude;
+    private Double longitude;
 }
