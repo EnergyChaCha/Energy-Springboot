@@ -1,7 +1,5 @@
 package com.chacha.energy.api.heartRate.dto;
 
-import com.chacha.energy.domain.heartRate.entity.HeartRate;
-import com.chacha.energy.domain.member.entity.Member;
 import lombok.*;
 import java.time.LocalDate;
 public class HeartRateDto {
