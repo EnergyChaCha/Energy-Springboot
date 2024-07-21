@@ -30,19 +30,19 @@ public class HeartService {
 //        this.heartRateRepository = heartRateRepository;
 //    }
 
-    public Map<String, Integer> getHeartRateByMemberId(int id){
+    // HT-02 심박수 임계치 조회
+    public HeartRateDto.UpdateHeartRateThresholdResponse getHeartRateByMemberId(int id){
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
-        Map<String, Integer> threshold = new HashMap<>();
-        threshold.put("minThreshold", member.getMinBpmThreshold());
-        threshold.put("maxThreshold", member.getMaxBpmThreshold());
-
-        return threshold;
+        return HeartRateDto.UpdateHeartRateThresholdResponse.builder()
+                .minTreshold(member.getMinBpmThreshold())
+                .maxTreshold(member.getMaxBpmThreshold())
+                .build();
     }
 
-    // HI-02 심박수 업데이트
-    public Map<String, Integer> updateHeartRateThreshold(int id, int minThreshold, int maxTreshold) {
+    // HT-01 심박수 임계치 업데이트
+    public HeartRateDto.UpdateHeartRateThresholdResponse updateHeartRateThreshold(int id, int minThreshold, int maxTreshold) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
@@ -51,11 +51,10 @@ public class HeartService {
 
         Member updatedMember = memberRepository.save(member);
 
-        Map<String, Integer> threshold = new HashMap<>();
-        threshold.put("minThreshold", updatedMember.getMinBpmThreshold());
-        threshold.put("maxThreshold", updatedMember.getMaxBpmThreshold());
-
-        return threshold;
+        return HeartRateDto.UpdateHeartRateThresholdResponse.builder()
+                .minTreshold(member.getMinBpmThreshold())
+                .maxTreshold(member.getMaxBpmThreshold())
+                .build();
     }
 
     // HI-03 회원별 심박수 삼세조회
