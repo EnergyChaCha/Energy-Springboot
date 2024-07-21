@@ -40,8 +40,8 @@ public class ReportController {
 
     @Operation(summary = "RI-07 본인 신고 이력 조회", description = "")
     @GetMapping("/my-report")
-    public ApiResponse<Page<ResponseReportDto>> getMyReportList(ReportDto.RequestMyReportList getReportDto){
-        System.out.println("MYREPORT : " + getReportDto.getSize() + " " + getReportDto.getId() + " " + getReportDto.getStart()
+    public ApiResponse<ReportDto.ResponseMyReportList> getMyReportList(@ModelAttribute ReportDto.RequestMyReportList getReportDto){
+        System.out.println("MYREPORT : " + getReportDto.getSize()  + " " + getReportDto.getStart()
                 + " " +  getReportDto.getEnd());
         return ApiResponse.success(SuccessCode.GET_SUCCESS, reportService.getMyReportList(getReportDto));
     }
