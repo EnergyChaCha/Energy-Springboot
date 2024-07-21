@@ -3,6 +3,8 @@ package com.chacha.energy.common.util;
 public class MaskingUtil {
 
     public static String maskLoginId(String loginId) {
+        if(loginId.length() < 3) return loginId;
+
         return loginId.substring(0, 3)+"**";
     }
 
@@ -13,6 +15,8 @@ public class MaskingUtil {
     }
 
     public static String maskPhone(String phone) {
+        if(phone.length() < 10) return phone;
+
         return phone.substring(0, 4)+"****"+phone.substring(8, phone.length()-1);
     }
 }
