@@ -3,6 +3,7 @@ package com.chacha.energy.api.heartRate.service;
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
@@ -66,14 +67,20 @@ public class HeartService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
         boolean overHeartRate = false;
+        String heartStatus = "stable";
         if(bpm<member.getMinBpmThreshold() || bpm>member.getMaxBpmThreshold()){
+            heartStatus = "emergency";
             overHeartRate = true;
         }
 
+        else if(bpm-member.getMinBpmThreshold() <= 10 || member.getMaxBpmThreshold()-bpm <= 10){
+            heartStatus = "caution";
+        }
         HeartRate heartRate = new HeartRate(
                 member,
                 bpm,
-                overHeartRate
+                overHeartRate,
+                heartStatus
         );
         heartRate = heartRateRepository.save(heartRate);
 
@@ -89,15 +96,15 @@ public class HeartService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
-       List<ResponseHeartRateDto> responseHeartRateDto = heartRateRepository.findHeartRateStatistics(id, start, end);
+       List<ResponseHeartRateDto> responseHeartRateDto = heartRateRepository.findHeartRateStatistics(id, start, end, interval);
 
         return responseHeartRateDto;
     }
 
-//    // HI-02 전체 심박수임계치 리스트 조회
-//    public List<HeartRateDto.GetHeartRateListDto> getAllHeartRates(LocalDateTime start, LocalDateTime end, String heartrateStatus, String loginId) {
-//        return heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
-//    }
+    // HI-02 전체 심박수임계치 리스트 조회
+    public List<ResponseListHeartRateDto> getAllHeartRates(LocalDateTime start, LocalDateTime end, String heartrateStatus, String loginId) {
+        return heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
+    }
 
 
     // HI-03 회원별 심박수 삼세조회
@@ -120,7 +127,7 @@ public class HeartService {
 //                .build();
 //    }
 
-//    // HI-04 심박수 상세조회
+    // HI-04 심박수 상세조회
 //    public HeartRateDto.GetHeartRateAvg getHeartRateStatistics(LocalDateTime start, LocalDateTime end) {
 //
 //        HeartRateDto.GetHeartRateAvg heartRateAvg = memberRepository.getHeartRateStatsBetweenDates(start,end);
