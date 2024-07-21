@@ -2,6 +2,8 @@ package com.chacha.energy.api.heartRate.dto;
 
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class HeartRateDto {
 
     @Getter
@@ -49,4 +51,39 @@ public class HeartRateDto {
         private double averageThreshold;
 
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetHeartRateListDto {
+        private String id;
+        private String name;
+        private String phone;
+        private String loginId;
+        private int minBpm;
+        private int maxBpm;
+        private int averageBpm;
+        private int minThreshold;
+        private int maxThreshold;
+        private String heartrateStatus;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostHearRateRequest {
+        private int bpm;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostHearRateResponse {
+        private int bpm;
+        private boolean overThreshold;
+    }
+
 }
