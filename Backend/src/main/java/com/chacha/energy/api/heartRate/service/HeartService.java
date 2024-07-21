@@ -2,18 +2,20 @@ package com.chacha.energy.api.heartRate.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
+import com.chacha.energy.domain.report.entity.Report;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,25 +59,66 @@ public class HeartService {
                 .build();
     }
 
-    // HI-03 회원별 심박수 삼세조회
-    public HeartRateDto.GetDetailMemberHeartrateResponse getMemberHeartRateDetail(int id) {
+
+    // HI-09 심박 수 저장
+    public HeartRateDto.PostHearRateResponse saveHeartRate(int id, int bpm) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
-        HeartRate latestHeartRate = heartRateRepository.findLatestByMemberId(member.getId())
-                .orElse(null);
+        boolean overHeartRate = false;
+        if(bpm<member.getMinBpmThreshold() || bpm>member.getMaxBpmThreshold()){
+            overHeartRate = true;
+        }
 
-        return HeartRateDto.GetDetailMemberHeartrateResponse.builder()
-                .name(member.getName())
-                .birthdate(member.getBirthdate())
-                .gender(member.getGender())
-                .status(latestHeartRate != null ? latestHeartRate.getBpm() : 0)
-                .phone(member.getPhone())
-                .loginId(member.getLoginId())
-                .workArea(member.getWorkArea())
-                .department(member.getDepartment())
+        HeartRate heartRate = new HeartRate(
+                member,
+                bpm,
+                overHeartRate
+        );
+        heartRate = heartRateRepository.save(heartRate);
+
+        return HeartRateDto.PostHearRateResponse.builder()
+                .bpm(heartRate.getBpm())
+                .overThreshold(heartRate.getExceedsThreshold())
                 .build();
     }
+
+
+    // HI-01 심박수 그래프 조회
+    public List<ResponseHeartRateDto> getGraphByHeartRate(int id, LocalDateTime start, LocalDateTime end, String interval){
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
+
+       List<ResponseHeartRateDto> responseHeartRateDto = heartRateRepository.findHeartRateStatistics(id, start, end);
+
+        return responseHeartRateDto;
+    }
+
+//    // HI-02 전체 심박수임계치 리스트 조회
+//    public List<HeartRateDto.GetHeartRateListDto> getAllHeartRates(LocalDateTime start, LocalDateTime end, String heartrateStatus, String loginId) {
+//        return heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
+//    }
+
+
+    // HI-03 회원별 심박수 삼세조회
+//    public HeartRateDto.GetDetailMemberHeartrateResponse getMemberHeartRateDetail(int id) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
+//
+//        HeartRate latestHeartRate = heartRateRepository.findLatestByMemberId(member.getId())
+//                .orElse(null);
+//
+//        return HeartRateDto.GetDetailMemberHeartrateResponse.builder()
+//                .name(member.getName())
+//                .birthdate(member.getBirthdate())
+//                .gender(member.getGender())
+//                .status(latestHeartRate != null ? latestHeartRate.getBpm() : 0)
+//                .phone(member.getPhone())
+//                .loginId(member.getLoginId())
+//                .workArea(member.getWorkArea())
+//                .department(member.getDepartment())
+//                .build();
+//    }
 
 //    // HI-04 심박수 상세조회
 //    public HeartRateDto.GetHeartRateAvg getHeartRateStatistics(LocalDateTime start, LocalDateTime end) {
