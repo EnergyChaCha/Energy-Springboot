@@ -34,7 +34,7 @@ public class ReportController {
 
     @Operation(summary = "RI-05 신고 이력 상세 조회", description = "")
     @GetMapping(value="/", params="reportId")
-    public ApiResponse<ResponseReportDto> getReportDetail(@Valid @RequestParam(name="reportId") int reportId){
+    public ApiResponse<ReportDto.ReportDetailDto> getReportDetail(@Valid @RequestParam(name="reportId") int reportId){
         return ApiResponse.success(SuccessCode.GET_SUCCESS, reportService.getReportInfo(reportId));
     }
 
