@@ -2,11 +2,13 @@ package com.chacha.energy.api.heartRate.controller;
 
 import com.chacha.energy.api.auth.dto.AuthDto;
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.api.heartRate.service.HeartService;
 import com.chacha.energy.common.costants.SuccessCode;
 import com.chacha.energy.common.dto.ApiResponse;
+import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,15 +70,15 @@ public class HeartRateController {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, threshold);
     }
 
-//    @Operation(summary = "HI-04 일반 사용자 심박수 통계 조회", description = "주어진 기간동안의 평균, 최소, 최대 심박수를 숫자로 보여준다.")
-//    @GetMapping("/statistics/{memberId}")
-//    public ApiResponse<HeartRateDto.GetHeartRateAvg> getHeartRateStatistics(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end, @PathVariable("memberId") int id) {
-//
-//        HeartRateDto.GetHeartRateAvg threshold = heartService.getHeartRateStatistics(id, start, end);
-//        return ApiResponse.success(SuccessCode.GET_SUCCESS, threshold);
-//    }
+    @Operation(summary = "HI-04 일반 사용자 심박수 통계 조회", description = "주어진 기간동안의 평균, 최소, 최대 심박수를 숫자로 보여준다.")
+    @GetMapping("/statistics/{memberId}")
+    public ApiResponse<List<ResponseHeartRateAvg>> getHeartRateStatistics(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end, @PathVariable("memberId") int id) {
+
+        List<ResponseHeartRateAvg> responseHeartRateAvgs = heartService.getHeartRateStatistics(id, start.atStartOfDay(), end.atStartOfDay());
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, responseHeartRateAvgs);
+    }
 
     @Operation(summary = "HI-02 일반 사용자 심박수 통계 조회", description = "전체 정보 조회 기능, 아이디별 검색 가능")
     @GetMapping("/all")

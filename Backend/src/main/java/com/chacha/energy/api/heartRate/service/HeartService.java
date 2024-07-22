@@ -3,6 +3,7 @@ package com.chacha.energy.api.heartRate.service;
 import com.chacha.energy.api.auth.dto.AuthDto;
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
@@ -133,14 +134,10 @@ public class HeartService {
     }
 
 //     HI-04 심박수 상세조회
-//    public HeartRateDto.GetHeartRateAvg getHeartRateStatistics(int id, LocalDate start, LocalDate end) {
-//
-//        HeartRateDto.GetHeartRateAvg heartRateAvg = heartRateRepository.findHeartRateStatistics(id, start.atStartOfDay(), end.atStartOfDay());
-//
-//        return HeartRateDto.GetHeartRateAvg.builder()
-//                .minBpmThreshold(heartRateAvg.getMinBpmThreshold())
-//                .maxBpmThreshold(heartRateAvg.getMaxBpmThreshold())
-//                .averageThreshold(Math.round(heartRateAvg.getAverageThreshold()))
-//                .build();
-//    }
+    public List<ResponseHeartRateAvg> getHeartRateStatistics(int id, LocalDateTime start, LocalDateTime end) {
+
+        List<ResponseHeartRateAvg> responseHeartRateAvgs = heartRateRepository.findHeartRateStatistics(id, start, end);
+
+        return responseHeartRateAvgs;
+    }
 }

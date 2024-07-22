@@ -1,6 +1,7 @@
 package com.chacha.energy.api.heartRate.repository;
 
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
@@ -50,15 +51,19 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
 
 
     // HI-04
-//    @Query("SELECT new com.chacha.energy.api.heartRate.dto.HeartRateDto.GetHeartRateAvg(" +
-//            "MIN(h.bpm), MAX(h.bpm), CAST(AVG(h.bpm) AS double)) " +
-//            "FROM HeartRate h " +
-//            "WHERE h.member.id = :memberId " +
-//            "AND h.createdTime BETWEEN :start AND :end")
-//    HeartRateDto.GetHeartRateAvg findHeartRateStatistics(
-//            @Param("memberId") Integer memberId,
-//            @Param("start") LocalDateTime start,
-//            @Param("end") LocalDateTime end);
+    @Query("SELECT new com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg(" +
+            "m.minBpmThreshold, " +
+            "m.maxBpmThreshold, " +
+            "AVG(h.bpm)) " +
+            "FROM HeartRate h " +
+            "JOIN h.member m " +
+            "WHERE m.id = :memberId " +
+            "AND h.createdTime BETWEEN :start AND :end " +
+            "GROUP BY m.id, m.minBpmThreshold, m.maxBpmThreshold")
+    List<ResponseHeartRateAvg> findHeartRateStatistics(
+            @Param("memberId") Integer memberId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 
     // HI-02
     // SQL 바꾼 부분: group by 부분에 heartrate 부분을 빼고, select 문에서 heartrate 관련 부분은 집계함수 사용
