@@ -104,6 +104,7 @@ public class AuthDto {
         private String emergencyContactRelation;
         private String underlyingConditions;
         private String allergies;
+        private String disease;
         private String medications;
         private String bloodType;
         private Boolean organDonor;
