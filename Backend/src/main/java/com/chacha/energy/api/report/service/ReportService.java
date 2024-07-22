@@ -4,6 +4,7 @@ import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.report.constant.ReportFlagInfo;
 import com.chacha.energy.api.report.dto.ReportDto;
+import com.chacha.energy.api.report.dto.ResponseAllReportDto;
 import com.chacha.energy.api.report.dto.ResponseReportDto;
 import com.chacha.energy.api.report.dto.ResponseReportFlagInfoDto;
 import com.chacha.energy.api.report.repository.ReportReceiverRepository;
@@ -48,12 +49,16 @@ public class ReportService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(time, formatter).atStartOfDay();
     }
-    public Page<ResponseReportDto> getAllReportList(ReportDto.RequestAllReports getAllDto) {
+    public Page<ResponseAllReportDto> getAllReportList(ReportDto.RequestAllReports getAllDto) {
         PageRequest pageRequest = PageRequest.of(getAllDto.getPage(), getAllDto.getSize());
 
         LocalDateTime startTime = convertStringToTime(getAllDto.getStart());
         LocalDateTime endTime = convertStringToTime(getAllDto.getEnd());
-        return reportRepository.findAllByTime(startTime, endTime, pageRequest);
+
+        Page<ResponseAllReportDto> res = reportRepository.findAllByTime(startTime, endTime, pageRequest);
+
+
+        return res;
     }
 
     public Report getReportById(int reportId) {

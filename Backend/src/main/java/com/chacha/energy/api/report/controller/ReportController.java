@@ -2,6 +2,7 @@ package com.chacha.energy.api.report.controller;
 
 import com.chacha.energy.api.auth.service.AuthService;
 import com.chacha.energy.api.report.dto.ReportDto;
+import com.chacha.energy.api.report.dto.ResponseAllReportDto;
 import com.chacha.energy.api.report.dto.ResponseReportDto;
 import com.chacha.energy.api.report.service.ReportService;
 import com.chacha.energy.common.costants.SuccessCode;
@@ -27,7 +28,7 @@ public class ReportController {
 
     @Operation(summary = "RI-01 회원별 신고 이력 전체 조회", description = "")
     @GetMapping("/all")
-    public ApiResponse<Page<ResponseReportDto>> getAll(ReportDto.RequestAllReports getAllDto){
+    public ApiResponse<Page<ResponseAllReportDto>> getAll(ReportDto.RequestAllReports getAllDto){
         // TO-BE : Authentication 에서 Member를 가져와서 ROLE을 비교해야 함.
         return ApiResponse.success(SuccessCode.GET_SUCCESS, reportService.getAllReportList(getAllDto));
     }
