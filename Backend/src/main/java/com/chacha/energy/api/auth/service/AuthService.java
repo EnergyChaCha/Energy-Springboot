@@ -40,7 +40,7 @@ public class AuthService {
     }
 
     // AU-01 회원가입
-    public String signUp(AuthDto.SignUpRequest authDto){
+    public int signUp(AuthDto.SignUpRequest authDto){
         String encodePassword = bCryptPasswordEncoder.encode(authDto.getPassword());
         authDto.setPassword(encodePassword);
         if(memberRepository.findByLoginId(authDto.getLoginId()).isPresent()){
@@ -55,7 +55,7 @@ public class AuthService {
             member.setRole(Role.USER.name());
         }
         memberRepository.save(member);
-        return member.getLoginId();
+        return member.getId();
 
     }
 

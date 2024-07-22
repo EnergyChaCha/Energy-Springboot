@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +24,10 @@ public class AuthController {
 
     @Operation(summary = "AU-01 회원가입", description = "")
     @PostMapping("/signup")
-    public ApiResponse<String> signUp(@Valid @RequestBody AuthDto.SignUpRequest authDto){
-        return ApiResponse.success(SuccessCode.POST_SUCCESS, authService.signUp(authDto));
+    public ApiResponse<Map<String, Integer>> signUp(@Valid @RequestBody AuthDto.SignUpRequest authDto){
+        Map<String, Integer> response = new HashMap<>();
+        response.put("id", authService.signUp(authDto));
+        return ApiResponse.success(SuccessCode.POST_SUCCESS, response);
     }
 
     @Operation(summary = "AU-03 아이디 중복 검사", description = "아이디 중복 체크")
