@@ -2,11 +2,13 @@ package com.chacha.energy.api.heartRate.controller;
 
 import com.chacha.energy.api.auth.dto.AuthDto;
 import com.chacha.energy.api.heartRate.dto.HeartRateDto;
+import com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.api.heartRate.service.HeartService;
 import com.chacha.energy.common.costants.SuccessCode;
 import com.chacha.energy.common.dto.ApiResponse;
+import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,15 +70,15 @@ public class HeartRateController {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, threshold);
     }
 
-//    @Operation(summary = "HI-04 일반 사용자 심박수 통계 조회", description = "주어진 기간동안의 평균, 최소, 최대 심박수를 숫자로 보여준다.")
-//    @GetMapping("/statistics/{memberId}")
-//    public ApiResponse<String> getHeartRateData(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime start,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime end, @PathVariable("memberId") int id) {
-//
-//        HeartRateDto.GetHeartRateAvg threshold = heartService.getHeartRateStatistics(start, end);
-//        return ApiResponse.success(SuccessCode.GET_SUCCESS, threshold.toString());
-//    }
+    @Operation(summary = "HI-04 일반 사용자 심박수 통계 조회", description = "주어진 기간동안의 평균, 최소, 최대 심박수를 숫자로 보여준다.")
+    @GetMapping("/statistics/{memberId}")
+    public ApiResponse<List<ResponseHeartRateAvg>> getHeartRateStatistics(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end, @PathVariable("memberId") int id) {
+
+        List<ResponseHeartRateAvg> responseHeartRateAvgs = heartService.getHeartRateStatistics(id, start.atStartOfDay(), end.atStartOfDay());
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, responseHeartRateAvgs);
+    }
 
     @Operation(summary = "HI-02 일반 사용자 심박수 통계 조회", description = "전체 정보 조회 기능, 아이디별 검색 가능")
     @GetMapping("/all")
@@ -91,15 +93,14 @@ public class HeartRateController {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, heartRates);
     }
 
-//    @Operation(summary = "HI-03 회원 심박수 상세 정보 조회", description = "관리자가 리스트에서 클릭했을때 해당 회원의 심박수 상세 정보 조회")
-//    @GetMapping("/statistics")
-//    public ApiResponse<String> getHeartRateData(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime start,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime end) {
-//
-//        HeartRateDto.GetHeartRateAvg threshold = heartService.getHeartRateStatistics(start, end);
-//        return ApiResponse.success(SuccessCode.GET_SUCCESS, threshold.toString());
-//    }
+    /* TO-BE : status값이 제대로 나오지 않은 것 같아서 수정해야함 */
+    @Operation(summary = "HI-03 회원 심박수 상세 정보 조회", description = "관리자가 리스트에서 클릭했을때 해당 회원의 심박수 상세 정보 조회")
+    @GetMapping("/detail/{memberId}")
+    public ApiResponse<AuthDto.GetDetailMemberHeartrateResponse> getListDetailHeartRate(
+            @PathVariable("memberId") int id) {
 
+        AuthDto.GetDetailMemberHeartrateResponse detailHeartRate = heartService.getMemberHeartRateDetail(id);
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, detailHeartRate);
+    }
 
 }
