@@ -73,14 +73,14 @@ public class HeartService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
 
         boolean overHeartRate = false;
-        String heartStatus = "stable";
+        int heartStatus = 0;
         if(bpm<member.getMinBpmThreshold() || bpm>member.getMaxBpmThreshold()){
-            heartStatus = "emergency";
+            heartStatus = 2;
             overHeartRate = true;
         }
 
         else if(bpm-member.getMinBpmThreshold() <= 10 || member.getMaxBpmThreshold()-bpm <= 10){
-            heartStatus = "caution";
+            heartStatus = 1;
         }
         HeartRate heartRate = new HeartRate(
                 member,
@@ -108,7 +108,7 @@ public class HeartService {
     }
 
     // HI-02 전체 심박수임계치 리스트 조회
-    public List<ResponseListHeartRateDto> getAllHeartRates(LocalDateTime start, LocalDateTime end, String heartrateStatus, String loginId) {
+    public List<ResponseListHeartRateDto> getAllHeartRates(LocalDateTime start, LocalDateTime end, Integer heartrateStatus, String loginId) {
         return heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
     }
 

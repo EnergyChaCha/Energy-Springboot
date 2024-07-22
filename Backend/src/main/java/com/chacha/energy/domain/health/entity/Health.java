@@ -29,6 +29,9 @@ public class Health extends BaseEntity {
     @Column(name = "underlying_conditions")
     private String underlyingConditions;
 
+    @Column(name = "disease")
+    private String disease;
+
     @Column(name = "allergies")
     private String allergies;
 

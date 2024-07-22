@@ -14,9 +14,10 @@ public class ResponseListHeartRateDto {
     private String name;
     private String phone;
     private String loginId;
-    private Integer bpm;
-    private Double averageThreshold;
+    private Integer minBpm;
+    private Integer maxBpm;
+    private Double avgBpm;
     private Integer minThreshold;
     private Integer maxThreshold;
-    private String heartrateStatus;
+    private Integer heartrateStatus;
 }

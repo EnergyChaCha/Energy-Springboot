@@ -74,11 +74,11 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
     //       전제조건: sql로 하려면 집계함수를 적용시켜야함
     //       방안1: 그냥 heartrateStatus는 sql로 구하지 않고 자바 코드로 계산하기
     //       방안2: HeartRate 엔티티에서 status 타입을 Integer로 바꾸고,
-    //             DB 저장할 때는 숫자로 저장: 2(emergency) 1(caution) 0(statble)
+    //             DB 저장할 때는 숫자로 저장: HeartStatus 2(emergency) 1(caution) 0(statble)
     //             그리고 sql에서 불러올 때 max(h.heartStatus)로 하면 그 기간동안의 가장 높은 등급이 조회됨
     @Query("SELECT new com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto(" +
             "m.id, m.name, m.phone, m.loginId, " +
-            "min(h.bpm), avg(h.bpm), "+
+            "min(h.bpm), max(h.bpm), avg(h.bpm), "+
             "m.minBpmThreshold, m.maxBpmThreshold, max(h.heartStatus)) " +
             "FROM HeartRate h " +
             "LEFT JOIN Member m ON h.member.id =  m.id " +
@@ -89,7 +89,7 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
     List<ResponseListHeartRateDto> findAllHeartRateThresholds(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
-            @Param("heartrateStatus") String heartrateStatus,
+            @Param("heartrateStatus") Integer heartrateStatus,
             @Param("loginId") String loginId);
 
 }

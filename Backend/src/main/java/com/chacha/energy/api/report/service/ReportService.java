@@ -1,5 +1,6 @@
 package com.chacha.energy.api.report.service;
 
+import com.chacha.energy.api.auth.repository.HealthRepository;
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.report.constant.ReportFlagInfo;
@@ -11,6 +12,7 @@ import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
+import com.chacha.energy.domain.health.entity.Health;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
 import com.chacha.energy.domain.member.entity.Role;
@@ -44,6 +46,7 @@ public class ReportService {
     private final MemberService memberService;
     private final HeartRateRepository heartRateRepository;
     private final ReportReceiverRepository reportReceiverRepository;
+    private final HealthRepository healthRepository;
 
     public LocalDateTime convertStringToTime(String time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -80,10 +83,53 @@ public class ReportService {
                 .build();
     }
 
-    public ResponseReportDto getReportInfo(int reportId) {
+    public ReportDto.ReportDetailDto getReportInfo(int reportId) {
         Report report = getReportById(reportId);
+        Health health = healthRepository.findByMemberId(report.getPatient().getId()).orElseThrow(
+                () -> new CustomException(ErrorCode.NO_ID, reportId)
+        );
 
-        return getReportDto(report);
+        ReportDto.HealthInfoDto healthInfoDto = ReportDto.HealthInfoDto.builder()
+                .allergy(health.getAllergies())
+                .emergencyNumber(health.getEmergencyContact())
+                .emergencyRelationship(health.getEmergencyContactRelation())
+                .blood(health.getBloodType())
+                .medication(health.getMedications())
+                .organDonor(health.getOrganDonor())
+                .disease(health.getDisease())
+                .bpm(report.getBpm())
+                .build();
+        ReportDto.PatientDto patientDto = ReportDto.PatientDto.builder()
+                .id(report.getPatient().getId())
+                .loginId((report.getPatient().getLoginId()))
+                .name(report.getPatient().getName())
+                .gender(report.getPatient().getGender())
+                .phone(report.getPatient().getPhone())
+                .workArea(report.getPatient().getWorkArea())
+                .department(report.getPatient().getDepartment())
+                .latitude(report.getLatitude())
+                .longitude(report.getLongitude())
+                .status(report.getStatus())
+                .address(report.getPatient().getAddress())
+                .healthInfoDto(healthInfoDto)
+        .build();
+        ReportDto.ResponseSearchResult reportDto = ReportDto.ResponseSearchResult.builder()
+                .id(report.getReporter().getId())
+                .name(report.getReporter().getName())
+                .phone(report.getReporter().getPhone())
+                .loginId(report.getReporter().getLoginId())
+                .gender(report.getReporter().getGender())
+                .workArea(report.getReporter().getWorkArea())
+                .department(report.getReporter().getDepartment())
+                .birthdate(report.getReporter().getBirthdate())
+                .build();
+
+        return ReportDto.ReportDetailDto.builder()
+                .reporter(reportDto)
+                .createdTime(report.getCreatedTime())
+                .id(report.getId())
+                .patient(patientDto)
+        .build();
     }
 
     public ReportDto.ResponseMyReportList getMyReportList(ReportDto.RequestMyReportList getReportDto) {

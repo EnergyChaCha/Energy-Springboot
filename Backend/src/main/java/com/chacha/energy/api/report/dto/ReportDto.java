@@ -155,8 +155,41 @@ public class ReportDto {
         }
     }
 
-
-
-
+    @Getter
+    @Builder
+    public static class PatientDto {
+        private int id;
+        private String loginId;
+        private String name;
+        private Boolean gender;
+        private String phone;
+        private String workArea;
+        private String department;
+        private Double latitude;
+        private Double longitude;
+        private String status;
+        private String address;
+        private HealthInfoDto healthInfoDto;
+    }
+    @Getter
+    @Builder
+    public static class HealthInfoDto {
+        private String emergencyNumber;
+        private String emergencyRelationship;
+        private String disease;
+        private String allergy;
+        private String medication;
+        private String blood;
+        private Boolean organDonor;
+        private int bpm;
+    }
+    @Getter
+    @Builder
+    public static class ReportDetailDto{
+        private int id;
+        private LocalDateTime createdTime;
+        private PatientDto patient;
+        private ResponseSearchResult reporter;
+    }
 
 }

@@ -8,21 +8,16 @@ import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
 import com.chacha.energy.api.heartRate.service.HeartService;
 import com.chacha.energy.common.costants.SuccessCode;
 import com.chacha.energy.common.dto.ApiResponse;
-import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Slf4j
 @RestController
@@ -85,7 +80,7 @@ public class HeartRateController {
     public ApiResponse<List<ResponseListHeartRateDto>> getHeartRateData(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
-            @RequestParam(name = "heartrate-status", required = false) String heartrateStatus,
+            @RequestParam(name = "heartrate-status", required = false) Integer heartrateStatus,
             @RequestParam(required = false) String loginId) {
 
         List<ResponseListHeartRateDto> heartRates = heartService.getAllHeartRates(start.atStartOfDay(), end.atStartOfDay(), heartrateStatus, loginId);
