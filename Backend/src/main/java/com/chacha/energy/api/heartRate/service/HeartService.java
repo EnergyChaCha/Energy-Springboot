@@ -119,6 +119,11 @@ public class HeartService {
 
     public List<ResponseListHeartRateDto> getAllHeartRatesMasking(LocalDateTime start, LocalDateTime end, Integer heartrateStatus, String loginId) {
         List<ResponseListHeartRateDto> heartRates = heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
+        for (ResponseListHeartRateDto dto: heartRates) {
+            dto.setLoginId(MaskingUtil.maskLoginId(dto.getLoginId()));
+            dto.setName(MaskingUtil.maskName(dto.getName()));
+            dto.setPhone(MaskingUtil.maskPhone(dto.getPhone()));
+        }
 
 //        for (ResponseListHeartRateDto heartRate : heartRates) {
 //            heartRate.setName(MaskingUtil.maskName(heartRate.getName()));

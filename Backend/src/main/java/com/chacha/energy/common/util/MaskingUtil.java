@@ -17,6 +17,6 @@ public class MaskingUtil {
     public static String maskPhone(String phone) {
         if(phone.length() < 10) return phone;
 
-        return phone.substring(0, 4)+"****"+phone.substring(8, phone.length()-1);
+        return phone.substring(0, 4)+"****"+phone.substring(phone.length()-5);
     }
 }
