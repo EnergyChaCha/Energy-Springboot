@@ -44,11 +44,10 @@ public class HeartRateController {
 
 
     @Operation(summary = "HI-09 심박수 저장", description = "워치에서 받아온 심박수를 저장하는데 임계치 초과 여부도 저장한다.")
-    @PostMapping("/{memberId}")
-    public ApiResponse<HeartRateDto.PostHearRateResponse> getHeartRateSave(@Valid @RequestBody HeartRateDto.PostHearRateRequest postHearRateRequest,
-                                                                           @PathVariable("memberId") int id) {
+    @PostMapping("")
+    public ApiResponse<HeartRateDto.PostHearRateResponse> getHeartRateSave(@Valid @RequestBody HeartRateDto.PostHearRateRequest postHearRateRequest) {
 
-        HeartRateDto.PostHearRateResponse hearRateResponse = heartService.saveHeartRate(id, postHearRateRequest.getBpm());
+        HeartRateDto.PostHearRateResponse hearRateResponse = heartService.saveHeartRate( postHearRateRequest.getBpm());
         return ApiResponse.success(SuccessCode.GET_SUCCESS,hearRateResponse);
     }
 
