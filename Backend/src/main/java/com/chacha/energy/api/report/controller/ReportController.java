@@ -30,7 +30,7 @@ public class ReportController {
     @GetMapping("/all")
     public ApiResponse<Page<ResponseAllReportDto>> getAll(ReportDto.RequestAllReports getAllDto){
         // TO-BE : Authentication 에서 Member를 가져와서 ROLE을 비교해야 함.
-        return ApiResponse.success(SuccessCode.GET_SUCCESS, reportService.getAllReportList(getAllDto));
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, reportService.getAllReportListMasking(getAllDto));
     }
 
     @Operation(summary = "RI-05 신고 이력 상세 조회", description = "")

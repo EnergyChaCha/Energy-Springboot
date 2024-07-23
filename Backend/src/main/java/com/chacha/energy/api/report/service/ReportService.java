@@ -4,14 +4,12 @@ import com.chacha.energy.api.auth.repository.HealthRepository;
 import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.report.constant.ReportFlagInfo;
-import com.chacha.energy.api.report.dto.ReportDto;
-import com.chacha.energy.api.report.dto.ResponseAllReportDto;
-import com.chacha.energy.api.report.dto.ResponseReportDto;
-import com.chacha.energy.api.report.dto.ResponseReportFlagInfoDto;
+import com.chacha.energy.api.report.dto.*;
 import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
+import com.chacha.energy.common.util.MaskingUtil;
 import com.chacha.energy.domain.health.entity.Health;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
@@ -52,7 +50,17 @@ public class ReportService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(time, formatter).atStartOfDay();
     }
+
     public Page<ResponseAllReportDto> getAllReportList(ReportDto.RequestAllReports getAllDto) {
+        PageRequest pageRequest = PageRequest.of(getAllDto.getPage(), getAllDto.getSize());
+
+        LocalDateTime startTime = convertStringToTime(getAllDto.getStart());
+        LocalDateTime endTime = convertStringToTime(getAllDto.getEnd());
+
+        return reportRepository.findAllByTime(startTime, endTime, pageRequest);
+    }
+
+    public Page<ResponseAllReportDto> getAllReportListMasking(ReportDto.RequestAllReports getAllDto) {
         PageRequest pageRequest = PageRequest.of(getAllDto.getPage(), getAllDto.getSize());
 
         LocalDateTime startTime = convertStringToTime(getAllDto.getStart());
@@ -60,8 +68,31 @@ public class ReportService {
 
         Page<ResponseAllReportDto> res = reportRepository.findAllByTime(startTime, endTime, pageRequest);
 
+        return res.map(report -> {
+            ResponseReportUserDto maskedReporter = maskUserData(report.getReporter());
+            ResponseReportUserDto maskedPatient = maskUserData(report.getPatient());
 
-        return res;
+            return ResponseAllReportDto.builder()
+                    .reportId(report.getReportId())
+                    .latitude(report.getLatitude())
+                    .longitude(report.getLongitude())
+                    .bpm(report.getBpm())
+                    .createdTime(report.getCreatedTime())
+                    .reporter(maskedReporter)
+                    .patient(maskedPatient)
+                    .build();
+        });
+    }
+
+
+
+    private ResponseReportUserDto maskUserData(ResponseReportUserDto user) {
+        return ResponseReportUserDto.builder()
+                .id(user.getId())
+                .loginId(MaskingUtil.maskLoginId(user.getLoginId()))
+                .name(MaskingUtil.maskName(user.getName()))
+                .phone(MaskingUtil.maskPhone(user.getPhone()))
+                .build();
     }
 
     public Report getReportById(int reportId) {
