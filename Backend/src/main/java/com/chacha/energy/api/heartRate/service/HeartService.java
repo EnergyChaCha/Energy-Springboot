@@ -13,6 +13,7 @@ import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.heartStatus.entity.HeartStatus;
 import com.chacha.energy.domain.member.entity.Member;
+import com.chacha.energy.domain.member.service.MemberService;
 import com.chacha.energy.domain.report.entity.Report;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class HeartService {
     private final MemberRepository memberRepository;
     private final HeartRateRepository heartRateRepository;
     private final HeartStatusRepository heartStatusRepository;
+    private final MemberService memberService;
 
 //    @Autowired
 //    public HeartRateService(MemberRepository memberRepository, HeartRateRepository heartRateRepository) {
@@ -68,9 +70,8 @@ public class HeartService {
 
 
     // HI-09 심박 수 저장
-    public HeartRateDto.PostHearRateResponse saveHeartRate(int id, int bpm) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NO_ID));
+    public HeartRateDto.PostHearRateResponse saveHeartRate(int bpm) {
+        Member member = memberService.getLoginMember();
 
         boolean overHeartRate = false;
         int heartStatus = 0;
@@ -89,6 +90,8 @@ public class HeartService {
                 heartStatus
         );
         heartRate = heartRateRepository.save(heartRate);
+
+        // TODO: 심박수 초과이며 해당 멤버의 가장 최신 alert가 5분 이전인 경우 alert 추가
 
         return HeartRateDto.PostHearRateResponse.builder()
                 .bpm(heartRate.getBpm())
