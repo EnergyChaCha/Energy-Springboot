@@ -54,6 +54,8 @@ public class AuthService {
         if (memberRepository.count() > 0L) {
             member.setRole(Role.USER.name());
         }
+        member.setMinBpmThreshold(49);
+        member.setMaxBpmThreshold(170);
         memberRepository.save(member);
         return member.getId();
 
