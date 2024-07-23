@@ -82,7 +82,7 @@ public class HeartRateController {
             @RequestParam(name = "heartrate-status", required = false) Integer heartrateStatus,
             @RequestParam(required = false) String loginId) {
 
-        List<ResponseListHeartRateDto> heartRates = heartService.getAllHeartRates(start.atStartOfDay(), end.atStartOfDay(), heartrateStatus, loginId);
+        List<ResponseListHeartRateDto> heartRates = heartService.getAllHeartRatesMasking(start.atStartOfDay(), end.atStartOfDay(), heartrateStatus, loginId);
 
         return ApiResponse.success(SuccessCode.GET_SUCCESS, heartRates);
     }

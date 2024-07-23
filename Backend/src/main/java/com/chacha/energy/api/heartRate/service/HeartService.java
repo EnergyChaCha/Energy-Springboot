@@ -10,6 +10,7 @@ import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.heartRate.repository.HeartStatusRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
+import com.chacha.energy.common.util.MaskingUtil;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.heartStatus.entity.HeartStatus;
 import com.chacha.energy.domain.member.entity.Member;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +117,16 @@ public class HeartService {
         return heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
     }
 
+    public List<ResponseListHeartRateDto> getAllHeartRatesMasking(LocalDateTime start, LocalDateTime end, Integer heartrateStatus, String loginId) {
+        List<ResponseListHeartRateDto> heartRates = heartRateRepository.findAllHeartRateThresholds(start, end, heartrateStatus, loginId);
+
+//        for (ResponseListHeartRateDto heartRate : heartRates) {
+//            heartRate.setName(MaskingUtil.maskName(heartRate.getName()));
+//            heartRate.setPhone(MaskingUtil.maskPhone(heartRate.getPhone()));
+//            heartRate.setLoginId(MaskingUtil.maskLoginId(heartRate.getLoginId()));
+//        }
+        return heartRates;
+    }
 
 //     HI-03 회원별 심박수 삼세조회
     public AuthDto.GetDetailMemberHeartrateResponse getMemberHeartRateDetail(int id) {
