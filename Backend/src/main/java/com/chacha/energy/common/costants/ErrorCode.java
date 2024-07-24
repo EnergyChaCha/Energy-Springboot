@@ -29,6 +29,9 @@ public enum ErrorCode {
     SIGNIN_FAILED(BAD_REQUEST, "아이디와 비밀번호를 확인해주세요."),
     MEMBER_NOT_FOUND_WITH_TOKEN(INTERNAL_SERVER_ERROR, "토큰인증을 하지 않는 곳에서 로그인한 멤버를 찾으려고 했습니다. [백엔드에 알려주세요]"),
 
+    // 권한
+    ONLY_ADMIN_AVAILABLE(UNAUTHORIZED, "어드민만 접근 가능합니다."),
+
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
 

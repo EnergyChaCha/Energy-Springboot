@@ -92,4 +92,5 @@ public interface HeartRateRepository extends JpaRepository<HeartRate, Integer> {
             @Param("heartrateStatus") Integer heartrateStatus,
             @Param("loginId") String loginId);
 
+
 }

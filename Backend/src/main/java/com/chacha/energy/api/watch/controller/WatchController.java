@@ -35,4 +35,10 @@ public class WatchController {
     public ApiResponse<List<WatchDto.NotificationResponse>> getThresholdExceedList() {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, watchService.getThresholdExceedList());
     }
+
+    @Operation(summary = "WA-06 신고 알림 리스트 조회", description = "")
+    @GetMapping("/notification/report")
+    public ApiResponse<List<WatchDto.NotificationResponse>> getReportList() {
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, watchService.getReportList());
+    }
 }

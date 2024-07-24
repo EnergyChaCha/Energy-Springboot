@@ -6,6 +6,8 @@ import com.chacha.energy.api.heartRate.repository.AlertRepository;
 import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.api.watch.dto.WatchDto;
+import com.chacha.energy.common.costants.ErrorCode;
+import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.common.util.MaskingUtil;
 import com.chacha.energy.domain.alert.entity.Alert;
 import com.chacha.energy.domain.member.entity.Member;
@@ -106,6 +108,52 @@ public class WatchService {
             stringBuilder.setLength(0);
 
             String timestamp = alert.getCreatedTime().format(formatter);
+
+            WatchDto.NotificationResponse notificationItem = new WatchDto.NotificationResponse(bpm, message, timestamp);
+            response.add(notificationItem);
+        }
+
+        return response;
+    }
+
+    public List<WatchDto.NotificationResponse> getReportList() {
+        Member member = memberService.getLoginMember();
+
+        List<Report> reportList = new ArrayList<>();
+        List<WatchDto.NotificationResponse> response = new ArrayList<>();
+
+        // 관리자만 접근 가능
+        if(!member.getRole().equals(Role.ADMIN.name())) {
+            throw new CustomException(ErrorCode.ONLY_ADMIN_AVAILABLE, member.getRole());
+        }
+
+        reportList = reportRepository.findAll();
+
+
+        StringBuilder stringBuilder = new StringBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+
+        for (Report report: reportList) {
+            Member targetMember = report.getPatient();
+            float bpm = report.getBpm().floatValue();
+
+            String thresholdExceedMessage = "이내";
+            if (report.getBpm() < targetMember.getMinBpmThreshold()) {
+                thresholdExceedMessage = "미만";
+            } else if (report.getBpm() > targetMember.getMaxBpmThreshold()) {
+                thresholdExceedMessage = "초과";
+            }
+
+            stringBuilder.append(MaskingUtil.maskName(targetMember.getName()))
+                    .append("(")
+                    .append(MaskingUtil.maskLoginId(targetMember.getLoginId()))
+                    .append(") 님 심박수가 임계치 ")
+                    .append(thresholdExceedMessage)
+                    .append("입니다.");
+            String message = stringBuilder.toString();
+            stringBuilder.setLength(0);
+
+            String timestamp = report.getCreatedTime().format(formatter);
 
             WatchDto.NotificationResponse notificationItem = new WatchDto.NotificationResponse(bpm, message, timestamp);
             response.add(notificationItem);
