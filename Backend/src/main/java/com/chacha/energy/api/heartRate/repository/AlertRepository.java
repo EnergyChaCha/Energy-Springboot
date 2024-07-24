@@ -13,7 +13,8 @@ import java.util.Optional;
 @Repository
 public interface AlertRepository extends JpaRepository<Alert, Integer> {
 
-    List<Alert> findAllByMember(Member member);
+    List<Alert> findAllByMemberAndCreatedTimeBeforeOrderByCreatedTimeDesc(Member member, LocalDateTime endTime);
+    List<Alert> findAllByCreatedTimeBeforeOrderByCreatedTimeDesc(LocalDateTime endTime);
 
     Optional<Alert> findFirstByMemberAndCreatedTimeBetweenOrderByCreatedTimeDesc(Member member, LocalDateTime start, LocalDateTime end);
 }

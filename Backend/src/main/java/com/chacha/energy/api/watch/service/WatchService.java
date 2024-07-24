@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
@@ -75,11 +76,12 @@ public class WatchService {
         List<Alert> alertList = new ArrayList<>();
         List<WatchDto.NotificationResponse> response = new ArrayList<>();
 
+
         // 모든 계정의 초과 알림
         if(member.getRole().equals(Role.ADMIN.name())) {
-            alertList = alertRepository.findAll();
+            alertList = alertRepository.findAllByCreatedTimeBeforeOrderByCreatedTimeDesc(LocalDateTime.now());
         } else {
-            alertList = alertRepository.findAllByMember(member);
+            alertList = alertRepository.findAllByMemberAndCreatedTimeBeforeOrderByCreatedTimeDesc(member, LocalDateTime.now());
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -127,7 +129,7 @@ public class WatchService {
             throw new CustomException(ErrorCode.ONLY_ADMIN_AVAILABLE, member.getRole());
         }
 
-        reportList = reportRepository.findAll();
+        reportList = reportRepository.findAllByCreatedTimeBeforeOrderByCreatedTimeDesc(LocalDateTime.now());
 
 
         StringBuilder stringBuilder = new StringBuilder();
