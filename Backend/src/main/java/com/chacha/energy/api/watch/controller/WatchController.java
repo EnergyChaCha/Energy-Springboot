@@ -7,9 +7,7 @@ import com.chacha.energy.common.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -22,5 +20,11 @@ public class WatchController {
     @GetMapping("/my-info")
     public ApiResponse<WatchDto.MyInfo> getMyInfo() {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, watchService.getMyInfo());
+    }
+
+    @Operation(summary = "WA-02 본인 신고", description = "본인 신고")
+    @PostMapping("/report")
+    public ApiResponse<WatchDto.ReportResponse> postMyReport(@RequestBody WatchDto.ReportRequest reportRequest) {
+        return ApiResponse.success(SuccessCode.POST_SUCCESS, watchService.postMyReport(reportRequest));
     }
 }
