@@ -1,9 +1,13 @@
 package com.chacha.energy.api.watch.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
+import com.chacha.energy.api.heartRate.repository.AlertReceiverRepository;
+import com.chacha.energy.api.heartRate.repository.AlertRepository;
 import com.chacha.energy.api.report.repository.ReportReceiverRepository;
 import com.chacha.energy.api.report.repository.ReportRepository;
 import com.chacha.energy.api.watch.dto.WatchDto;
+import com.chacha.energy.common.util.MaskingUtil;
+import com.chacha.energy.domain.alert.entity.Alert;
 import com.chacha.energy.domain.member.entity.Member;
 import com.chacha.energy.domain.member.entity.Role;
 import com.chacha.energy.domain.member.service.MemberService;
@@ -14,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class WatchService {
     private final MemberService memberService;
     private final ReportReceiverRepository reportReceiverRepository;
     private final ReportRepository reportRepository;
+    private final AlertRepository alertRepository;
 
 
     public WatchDto.MyInfo getMyInfo() {
@@ -58,5 +65,52 @@ public class WatchService {
         }
 
         return new WatchDto.ReportResponse(report.getId());
+    }
+
+    public List<WatchDto.NotificationResponse> getThresholdExceedList() {
+        Member member = memberService.getLoginMember();
+
+        List<Alert> alertList = new ArrayList<>();
+        List<WatchDto.NotificationResponse> response = new ArrayList<>();
+
+        // 모든 계정의 초과 알림
+        if(member.getRole().equals(Role.ADMIN.name())) {
+            alertList = alertRepository.findAll();
+        } else {
+            alertList = alertRepository.findAllByMember(member);
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+
+        for (Alert alert: alertList) {
+            Member targetMember = alert.getMember();
+            float bpm = alert.getBpm().floatValue();
+
+            String thresholdExceedMessage = "이내";
+            if (alert.getBpm() < targetMember.getMinBpmThreshold()) {
+                thresholdExceedMessage = "미만";
+            } else if (alert.getBpm() > targetMember.getMaxBpmThreshold()) {
+                thresholdExceedMessage = "초과";
+            }
+
+            if (thresholdExceedMessage.equals("이내")) continue;
+
+            stringBuilder.append(MaskingUtil.maskName(targetMember.getName()))
+                    .append("(")
+                    .append(MaskingUtil.maskLoginId(targetMember.getLoginId()))
+                    .append(") 님 심박수가 임계치 ")
+                    .append(thresholdExceedMessage)
+                    .append("입니다.");
+            String message = stringBuilder.toString();
+            stringBuilder.setLength(0);
+
+            String timestamp = alert.getCreatedTime().format(formatter);
+
+            WatchDto.NotificationResponse notificationItem = new WatchDto.NotificationResponse(bpm, message, timestamp);
+            response.add(notificationItem);
+        }
+
+        return response;
     }
 }
