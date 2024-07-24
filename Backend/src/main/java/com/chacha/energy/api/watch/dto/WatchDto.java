@@ -39,4 +39,14 @@ public class WatchDto {
     public static class ReportResponse {
         private Integer reportId;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class NotificationResponse {
+        private Float bpm;
+        private String message;
+        private String timestamp;
+    }
 }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +28,11 @@ public class WatchController {
     @PostMapping("/report")
     public ApiResponse<WatchDto.ReportResponse> postMyReport(@RequestBody WatchDto.ReportRequest reportRequest) {
         return ApiResponse.success(SuccessCode.POST_SUCCESS, watchService.postMyReport(reportRequest));
+    }
+
+    @Operation(summary = "WA-04 심박수 초과 알림 리스트 조회", description = "")
+    @GetMapping("/notification/heartrate")
+    public ApiResponse<List<WatchDto.NotificationResponse>> getThresholdExceedList() {
+        return ApiResponse.success(SuccessCode.GET_SUCCESS, watchService.getThresholdExceedList());
     }
 }
