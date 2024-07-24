@@ -6,11 +6,13 @@ import com.chacha.energy.api.heartRate.dto.HeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateAvg;
 import com.chacha.energy.api.heartRate.dto.ResponseHeartRateDto;
 import com.chacha.energy.api.heartRate.dto.ResponseListHeartRateDto;
+import com.chacha.energy.api.heartRate.repository.AlertRepository;
 import com.chacha.energy.api.heartRate.repository.HeartRateRepository;
 import com.chacha.energy.api.heartRate.repository.HeartStatusRepository;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import com.chacha.energy.common.util.MaskingUtil;
+import com.chacha.energy.domain.alert.entity.Alert;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.heartStatus.entity.HeartStatus;
 import com.chacha.energy.domain.member.entity.Member;
@@ -23,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +40,7 @@ public class HeartService {
     private final HeartRateRepository heartRateRepository;
     private final HeartStatusRepository heartStatusRepository;
     private final MemberService memberService;
+    private final AlertRepository alertRepository;
 
 //    @Autowired
 //    public HeartRateService(MemberRepository memberRepository, HeartRateRepository heartRateRepository) {
@@ -93,7 +98,15 @@ public class HeartService {
         );
         heartRate = heartRateRepository.save(heartRate);
 
-        // TODO: 심박수 초과이며 해당 멤버의 가장 최신 alert가 5분 이전인 경우 alert 추가
+        // 심박수 초과이며 해당 멤버의 가장 최신 alert가 5분 이전인 경우 alert 추가
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = end.minus(5, ChronoUnit.MINUTES);
+        Optional<Alert> lastAlert = alertRepository.findFirstByMemberAndCreatedTimeBetweenOrderByCreatedTimeDesc(member, start, end);
+        if (lastAlert.isEmpty()) {
+            Alert alert = new Alert(member, bpm, 0.0, 0.0, "address");
+            alertRepository.save(alert);
+        }
+
 
         return HeartRateDto.PostHearRateResponse.builder()
                 .bpm(heartRate.getBpm())

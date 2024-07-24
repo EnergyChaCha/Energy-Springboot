@@ -4,6 +4,7 @@ import com.chacha.energy.common.entity.BaseEntity;
 import com.chacha.energy.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.Comment;
 @Table(name = "alert")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Alert extends BaseEntity {
     @Comment("임계치 초과한 사람")
     @ManyToOne
