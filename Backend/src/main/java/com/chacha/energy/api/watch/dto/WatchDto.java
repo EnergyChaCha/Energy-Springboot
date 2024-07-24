@@ -21,4 +21,22 @@ public class WatchDto {
         private Float maxThreshold;
         private Boolean isAdmin;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReportRequest {
+        private Integer bpm;
+        private Double longitude;
+        private Double latitude;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReportResponse {
+        private Integer reportId;
+    }
 }
