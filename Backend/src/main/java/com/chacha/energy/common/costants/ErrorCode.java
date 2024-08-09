@@ -30,7 +30,10 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND_WITH_TOKEN(INTERNAL_SERVER_ERROR, "토큰인증을 하지 않는 곳에서 로그인한 멤버를 찾으려고 했습니다. [백엔드에 알려주세요]"),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
-    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
+    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다."),
+
+    /*CJ*/
+    NO_NAME_SIZE(BAD_REQUEST, "2글자 이상의 문자 입력이 필요합니다.");
 
     private final HttpStatus status;
     private final String message;
