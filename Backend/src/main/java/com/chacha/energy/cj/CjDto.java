@@ -21,9 +21,9 @@ public class CjDto {
     @AllArgsConstructor
     public static class staffListDtoResponse{
         private String name;
-        private int bpm;
-        private int step;
-        private int distance;
+        private Integer bpm;
+        private String step;
+        private Double distance;
     }
 
 }

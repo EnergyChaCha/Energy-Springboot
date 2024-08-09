@@ -12,12 +12,11 @@ import java.util.List;
 public interface CjRepository extends JpaRepository<CjEntity, Integer> {
     @Query("SELECT new com.chacha.energy.cj.CjDto$staffListDtoResponse(" +
             "m.name, " +
-            "COALESCE(hr.bpm, 0), " +
+            "c.bpm," +
             "c.step, " +
             "c.distance) " +
             "FROM CjEntity c " +
             "JOIN c.member m " +
-            "LEFT JOIN c.bpm hr " +
             "WHERE m.name LIKE CONCAT('%', :name, '%')")
     List<CjDto.staffListDtoResponse> findByMemberNameContaining(@Param("name") String name);
 }

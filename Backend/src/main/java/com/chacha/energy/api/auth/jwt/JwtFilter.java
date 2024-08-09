@@ -45,7 +45,8 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         // 3.토큰이 필요하지 않은 API URL의 경우 -> /api/auth/ 로 시작하는 URL인 경우 다음 필터로 이동한다.
         if (request.getRequestURI().startsWith("/api/auth") || request.getRequestURI()
-                .startsWith("/api/hello/") || request.getRequestURI().startsWith("/api/anonymous")) {
+                .startsWith("/api/hello/") || request.getRequestURI().startsWith("/api/anonymous")
+                || request.getRequestURI().startsWith("/api/cj")) {
             filterChain.doFilter(request, response);
             return;
         }

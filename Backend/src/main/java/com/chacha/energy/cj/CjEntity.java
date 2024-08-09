@@ -18,14 +18,10 @@ public class CjEntity extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(length = 255)
-    private int step;
+    private String step;
 
-    @Column(length = 255)
-    private int distance;
+    private Double distance;
 
-    @ManyToOne
-    @JoinColumn(name = "heartrate_id")
-    private HeartRate bpm;
+    private int bpm;
 
 }
