@@ -8,10 +8,22 @@ public class CjDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CjDtoResponse{
-        private int name;
+        private String name;
         private int createTime;
+        private int cjBpm;
+        private int step;
+        private int distance;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class staffListDtoResponse{
+        private String name;
         private int bpm;
         private int step;
         private int distance;
     }
+
 }
