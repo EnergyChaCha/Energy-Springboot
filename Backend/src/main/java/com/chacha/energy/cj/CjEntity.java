@@ -1,20 +1,22 @@
 package com.chacha.energy.cj;
 
 import com.chacha.energy.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.chacha.energy.domain.heartRate.entity.HeartRate;
+import com.chacha.energy.domain.member.entity.Member;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "cj")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CjEntity extends BaseEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(length = 255)
     private int step;
@@ -22,7 +24,8 @@ public class CjEntity extends BaseEntity {
     @Column(length = 255)
     private int distance;
 
-    @Column(length = 255)
-    private int cjBpm;
+    @ManyToOne
+    @JoinColumn(name = "heartrate_id")
+    private HeartRate bpm;
 
 }

@@ -33,7 +33,10 @@ public enum ErrorCode {
     ONLY_ADMIN_AVAILABLE(UNAUTHORIZED, "어드민만 접근 가능합니다."),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
-    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
+    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다."),
+
+    /*CJ*/
+    NO_NAME_SIZE(BAD_REQUEST, "2글자 이상의 문자 입력이 필요합니다.");
 
     private final HttpStatus status;
     private final String message;
