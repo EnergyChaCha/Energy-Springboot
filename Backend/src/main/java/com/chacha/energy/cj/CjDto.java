@@ -3,27 +3,29 @@ package com.chacha.energy.cj;
 import lombok.*;
 
 public class CjDto {
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CjDtoResponse{
-        private String name;
-        private int createTime;
-        private int cjBpm;
-        private int step;
-        private int distance;
-    }
 
     @Getter
+    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class staffListDtoResponse{
+        private int memberId;
         private String name;
         private Integer bpm;
-        private String step;
+        private Integer step;
         private Double distance;
     }
 
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class staffBpmSaveRequest{
+        private int memberId;
+        private Integer bpm;
+        private Integer step;
+        private Double distance;
+    }
 }
