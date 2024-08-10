@@ -4,13 +4,13 @@ import com.chacha.energy.common.entity.BaseEntity;
 import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "cj")
 @Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CjEntity extends BaseEntity {
 
@@ -18,7 +18,7 @@ public class CjEntity extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String step;
+    private int step;
 
     private Double distance;
 
