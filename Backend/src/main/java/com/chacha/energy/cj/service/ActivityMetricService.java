@@ -1,9 +1,9 @@
 package com.chacha.energy.cj.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
+import com.chacha.energy.cj.dto.ActivityMetricDto;
 import com.chacha.energy.cj.entity.ActivityMetric;
 import com.chacha.energy.cj.repository.ActivityMetricRepository;
-import com.chacha.energy.cj.dto.ActivityMetricDto;
 import com.chacha.energy.cj.util.Aes256Util;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
@@ -15,9 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -31,10 +29,8 @@ public class ActivityMetricService {
     public Page<ActivityMetricDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
                                                                             Integer page, Integer size, String order) {
 
-
-
         // 기본 정렬 순서
-        List<String> defaultOrder = Arrays.asList(new String[]{"step","distance","bpm"});
+        List<String> defaultOrder = Arrays.asList(new String[]{"step", "distance", "bpm"});
         Map<String, Sort.Direction> sortDirection = new HashMap<>();
         sortDirection.put("asc", Sort.Direction.ASC);
         sortDirection.put("desc", Sort.Direction.DESC);
@@ -47,9 +43,9 @@ public class ActivityMetricService {
         List<String> finalOrder = new ArrayList<>();
 
         // 입력받은 요소별 정렬 방향 지정
-        for (String token: tokens) {
+        for (String token : tokens) {
             if (token.equals("")) continue;
-            String[] elements  = token.split("-");
+            String[] elements = token.split("-");
             if (elements.length < 2) throw new CustomException(ErrorCode.INCORRECT_DELIMITER, token);
             String factor = elements[0];
             String direction = elements[1];
@@ -64,16 +60,16 @@ public class ActivityMetricService {
         }
 
         // 입력받지 않은 요소에 대해 기본 정렬 순서에 맞게 정렬 지정
-        for (String factor: defaultOrder) {
-            if (!finalOrder.contains(factor)){
+        for (String factor : defaultOrder) {
+            if (!finalOrder.contains(factor)) {
                 finalOrder.add(factor);
-                sortDirectionByFactor.put(factor,Sort.Direction.ASC);
+                sortDirectionByFactor.put(factor, Sort.Direction.ASC);
             }
         }
 
         List<Sort.Order> orders = new ArrayList<>();
-        for (String factor: finalOrder) {
-            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor.equals("bpm")?"originBpm":factor));
+        for (String factor : finalOrder) {
+            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor.equals("bpm") ? "originBpm" : factor));
         }
 
         Sort sort = Sort.by(orders);
@@ -82,19 +78,18 @@ public class ActivityMetricService {
         return activityMetricRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, pageRequest);
     }
 
-    public ActivityMetricDto.staffListDtoResponse saveBpm(ActivityMetricDto.staffBpmSaveRequest staffBpmSaveRequest){
+    public ActivityMetricDto.staffListDtoResponse saveBpm(ActivityMetricDto.staffBpmSaveRequest staffBpmSaveRequest) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        ActivityMetric activityMetric = activityMetricRepository.existsByCurrentDate(staffBpmSaveRequest.getMemberId(),localDateTime);
-        if(activityMetric ==null){
+        ActivityMetric activityMetric = activityMetricRepository.existsByCurrentDate(staffBpmSaveRequest.getMemberId(), localDateTime);
+        if (activityMetric == null) {
             activityMetric = new ActivityMetric(memberRepository.findById(staffBpmSaveRequest.getMemberId()).orElseThrow(
                     () -> new CustomException(ErrorCode.NO_ID, staffBpmSaveRequest.getMemberId())
-                    ),
+            ),
                     staffBpmSaveRequest.getStep(),
                     staffBpmSaveRequest.getDistance(),
                     staffBpmSaveRequest.getBpm(),
                     Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
-        }
-        else{
+        } else {
             activityMetric.setBpm(Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
             activityMetric.setStep(staffBpmSaveRequest.getStep());
             activityMetric.setDistance(staffBpmSaveRequest.getDistance());

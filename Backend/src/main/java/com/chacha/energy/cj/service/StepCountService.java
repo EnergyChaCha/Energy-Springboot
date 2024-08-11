@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StepCountService {
     private final StepCountRepository stepCountRepository;
+
     public String postStepCount(StepCountRequestDto dto) {
         StepCount entity = new StepCount(dto.getKey());
         stepCountRepository.save(entity);

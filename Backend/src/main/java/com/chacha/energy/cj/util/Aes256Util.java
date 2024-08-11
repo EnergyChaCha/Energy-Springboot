@@ -1,12 +1,5 @@
 package com.chacha.energy.cj.util;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import org.apache.commons.codec.DecoderException;
@@ -14,26 +7,18 @@ import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
 @Component
 public class Aes256Util {
     private static String KEY;
     private static byte[] SALT;
     private static String IV;
-
-    @Value("${aes256.key}")
-    public void setKEY(String KEY) {
-        Aes256Util.KEY = KEY;
-    }
-
-    @Value("${aes256.salt}")
-    public void setSALT(String SALT) throws DecoderException {
-        Aes256Util.SALT = Hex.decodeHex(SALT.toCharArray());
-    }
-
-    @Value("${aes256.iv}")
-    public void setIV(String IV) {
-        Aes256Util.IV = IV;
-    }
 
     public static String encrypt(String str) {
         try {
@@ -83,7 +68,6 @@ public class Aes256Util {
         }
     }
 
-
     private static byte[] doFinal(int encryptMode, SecretKey key, String iv, byte[] bytes) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(encryptMode, key, new IvParameterSpec(decodeHex(iv)));
@@ -120,6 +104,21 @@ public class Aes256Util {
 
     private static byte[] decodeHex(String str) throws Exception {
         return Hex.decodeHex(str.toCharArray());
+    }
+
+    @Value("${aes256.key}")
+    public void setKEY(String KEY) {
+        Aes256Util.KEY = KEY;
+    }
+
+    @Value("${aes256.salt}")
+    public void setSALT(String SALT) throws DecoderException {
+        Aes256Util.SALT = Hex.decodeHex(SALT.toCharArray());
+    }
+
+    @Value("${aes256.iv}")
+    public void setIV(String IV) {
+        Aes256Util.IV = IV;
     }
 }
 
