@@ -32,11 +32,16 @@ public enum ErrorCode {
     // 권한
     ONLY_ADMIN_AVAILABLE(UNAUTHORIZED, "어드민만 접근 가능합니다."),
 
-    /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
-    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다."),
-
     /*CJ*/
-    NO_NAME_SIZE(BAD_REQUEST, "2글자 이상의 문자 입력이 필요합니다.");
+    NO_NAME_SIZE(BAD_REQUEST, "2글자 이상의 문자 입력이 필요합니다."),
+    INCORRECT_DELIMITER(BAD_REQUEST, "구분자를 확인해주세요."),
+    INCORRECT_ELEMENT(BAD_REQUEST, "각 요소가 제대로 들어갔는지 확인해주세요. (step, distance, bpm)만 가능, 오타 확인하기!!"),
+    INCORRECT_DIRECTION(BAD_REQUEST, "정렬 방향이 들어갔는지 확인해주세요. (asc, desc)만 가능, 오타 확인하기!!"),
+
+    /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
+    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
+
+
 
     private final HttpStatus status;
     private final String message;
