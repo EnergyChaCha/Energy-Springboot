@@ -1,9 +1,11 @@
-package com.chacha.energy.cj;
+package com.chacha.energy.cj.entity;
 
 import com.chacha.energy.common.entity.BaseEntity;
-import com.chacha.energy.domain.heartRate.entity.HeartRate;
 import com.chacha.energy.domain.member.entity.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
@@ -12,7 +14,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class CjEntity extends BaseEntity {
+public class ActivityMetric extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
