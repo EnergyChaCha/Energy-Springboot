@@ -37,8 +37,10 @@ public class CjController {
                                                                        @RequestParam Integer size,
                                                                        @RequestParam(required = false)Integer bpm,
                                                                        @RequestParam(required = false)Integer step,
-                                                                       @RequestParam(required = false)Double distance) {
-        Page<CjDto.staffListDtoResponse> result = cjService.searchWorkersByName(name, bpm, step, distance, page, size);
+                                                                       @RequestParam(required = false)Double distance,
+                                                                       @RequestParam(required = false)String order
+    ) {
+        Page<CjDto.staffListDtoResponse> result = cjService.searchWorkersByName(name, bpm, step, distance, page, size, order == null ? "": order);
         return ApiResponse.success(SuccessCode.GET_SUCCESS, result);
     }
 
