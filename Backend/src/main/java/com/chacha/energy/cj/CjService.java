@@ -51,6 +51,7 @@ public class CjService {
 
         // 입력받은 요소별 정렬 방향 지정
         for (String token: tokens) {
+            if (token.equals("")) continue;
             String[] elements  = token.split("-");
             if (elements.length < 2) throw new CustomException(ErrorCode.INCORRECT_DELIMITER, token);
             String factor = elements[0];
