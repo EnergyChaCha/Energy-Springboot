@@ -40,5 +40,7 @@ public interface CjRepository extends JpaRepository<CjEntity, Integer> {
     )
     CjEntity existsByCurrentDate(@Param("id") Integer id,
                                            @Param("currentDate") LocalDateTime currentDate);
+
+    List<CjEntity> findAllByBpmIsNull();
 }
 

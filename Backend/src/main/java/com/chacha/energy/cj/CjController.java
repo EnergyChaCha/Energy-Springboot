@@ -51,5 +51,12 @@ public class CjController {
         return ApiResponse.success(SuccessCode.GET_SUCCESS, result);
     }
 
+    @Operation(summary = "CJ-04 심박수 데이터 양방향 암호화", description = "")
+    @PostMapping("/encode-bpm")
+    public ApiResponse<String> encodeBpm() {
+        String result = cjService.encodeBpm();
+        return ApiResponse.success(SuccessCode.POST_SUCCESS, result);
+    }
+
 
 }

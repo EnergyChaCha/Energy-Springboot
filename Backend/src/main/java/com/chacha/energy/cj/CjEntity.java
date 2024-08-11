@@ -22,6 +22,7 @@ public class CjEntity extends BaseEntity {
 
     private double distance;
 
-    private int bpm;
+    private Integer originBpm;
 
+    private String bpm;
 }

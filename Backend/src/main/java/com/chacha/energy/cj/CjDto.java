@@ -15,6 +15,14 @@ public class CjDto {
         private Integer bpm;
         private Integer step;
         private Double distance;
+
+        public staffListDtoResponse(int memberId, String name, String bpm, Integer step, Double distance) {
+            this.memberId = memberId;
+            this.name = name;
+            this.bpm = Aes256Util.decryptBpm(bpm);
+            this.step = step;
+            this.distance = distance;
+        }
     }
 
     @Getter
