@@ -24,7 +24,6 @@ public interface CjRepository extends JpaRepository<CjEntity, Integer> {
             "FROM CjEntity c " +
             "JOIN c.member m " +
             "WHERE m.name LIKE CONCAT('%', :name, '%')" +
-            "AND (m.createdTime >= :start AND m.createdTime <= :end)" +
             "AND (:bpm IS NULL OR c.bpm >= :bpm )" +
             "AND (:step IS NULL OR c.step >= :step )" +
             "AND (:distance IS NULL OR c.distance >= :distance )"
@@ -33,8 +32,6 @@ public interface CjRepository extends JpaRepository<CjEntity, Integer> {
                                                                 @Param("bpm") Integer bpm,
                                                                 @Param("step") Integer step,
                                                                 @Param("distance") Double distance,
-                                                                @Param("start") LocalDateTime start,
-                                                                @Param("end") LocalDateTime end,
                                                                 Pageable pageable);
 
     @Query("select c from CjEntity c " +
