@@ -1,9 +1,9 @@
-package com.chacha.energy.cj;
-
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-
-public interface CjMapper {
-}
+//package com.chacha.energy.cj;
+//
+//import org.mapstruct.Mapper;
+//import org.mapstruct.ReportingPolicy;
+//
+//@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+//
+//public interface CjMapper {
+//}

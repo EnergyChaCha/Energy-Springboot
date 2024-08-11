@@ -1,15 +1,16 @@
-package com.chacha.energy.cj;
+package com.chacha.energy.cj.dto;
 
+import com.chacha.energy.cj.util.Aes256Util;
 import lombok.*;
 
-public class CjDto {
+public class ActivityMetricDto {
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class staffListDtoResponse{
+    public static class staffListDtoResponse {
         private int memberId;
         private String name;
         private Integer bpm;
@@ -30,7 +31,7 @@ public class CjDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class staffBpmSaveRequest{
+    public static class staffBpmSaveRequest {
         private int memberId;
         private Integer bpm;
         private Integer step;
