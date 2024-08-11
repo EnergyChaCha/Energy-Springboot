@@ -27,12 +27,6 @@ import java.util.*;
 public class ActivityMetricService {
     private final ActivityMetricRepository activityMetricRepository;
     private final MemberRepository memberRepository;
-    private final Aes256Util aes256Util;
-
-    public LocalDateTime convertStringToTime(String time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(time, formatter).atStartOfDay();
-    }
 
     public Page<ActivityMetricDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
                                                                             Integer page, Integer size, String order) {
