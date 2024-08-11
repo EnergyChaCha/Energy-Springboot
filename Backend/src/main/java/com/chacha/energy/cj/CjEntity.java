@@ -20,7 +20,7 @@ public class CjEntity extends BaseEntity {
 
     private int step;
 
-    private Double distance;
+    private double distance;
 
     private int bpm;
 
