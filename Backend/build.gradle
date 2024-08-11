@@ -55,6 +55,9 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
+	// aes256
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+
 }
 
 tasks.named('test') {
