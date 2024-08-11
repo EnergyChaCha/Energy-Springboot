@@ -38,7 +38,11 @@ public enum ErrorCode {
     INCORRECT_ELEMENT(BAD_REQUEST, "각 요소가 제대로 들어갔는지 확인해주세요. (step, distance, bpm)만 가능, 오타 확인하기!!"),
     INCORRECT_DIRECTION(BAD_REQUEST, "정렬 방향이 들어갔는지 확인해주세요. (asc, desc)만 가능, 오타 확인하기!!"),
 
+    // 암호화
+
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
+    ENCRYPT_FAIL(INTERNAL_SERVER_ERROR, "암호화 실패"),
+    DECRYPT_FAIL(INTERNAL_SERVER_ERROR, "복호화 실패"),
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
 
 

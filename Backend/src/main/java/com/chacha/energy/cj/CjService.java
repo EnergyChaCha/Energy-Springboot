@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +27,7 @@ import java.util.*;
 public class CjService {
     private final CjRepository cjRepository;
     private final MemberRepository memberRepository;
+    private final Aes256Util aes256Util;
 
     public LocalDateTime convertStringToTime(String time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -76,7 +79,6 @@ public class CjService {
 
         List<Sort.Order> orders = new ArrayList<>();
         for (String factor: finalOrder) {
-            System.out.println("정렬순서: "+factor+"="+sortDirectionByFactor.get(factor));
             orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor));
         }
 
@@ -95,10 +97,11 @@ public class CjService {
                     ),
                     staffBpmSaveRequest.getStep(),
                     staffBpmSaveRequest.getDistance(),
-                    staffBpmSaveRequest.getBpm());
+                    staffBpmSaveRequest.getBpm(),
+                    Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
         }
         else{
-            cjEntity.setBpm(staffBpmSaveRequest.getBpm());
+            cjEntity.setBpm(Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
             cjEntity.setStep(staffBpmSaveRequest.getStep());
             cjEntity.setDistance(staffBpmSaveRequest.getDistance());
         }
@@ -107,11 +110,20 @@ public class CjService {
         return CjDto.staffListDtoResponse.builder()
                 .memberId(cjEntity.getMember().getId())
                 .name(cjEntity.getMember().getName())
-                .bpm(cjEntity.getBpm())
+                .bpm(Aes256Util.decryptBpm(cjEntity.getBpm()))
                 .distance(cjEntity.getDistance())
                 .step(cjEntity.getStep())
                 .build();
     }
 
+    public String encodeBpm() {
+        List<CjEntity> entities = cjRepository.findAllByBpmIsNull();
+        for (CjEntity entity : entities) {
+            String encrypted = Aes256Util.encrypt(entity.getOriginBpm().toString());
+            entity.setBpm(encrypted);
+        }
+        cjRepository.saveAll(entities);
+        return "성공";
+    }
 }
 
