@@ -32,15 +32,13 @@ public class CjController {
 
     @Operation(summary = "CJ-01 근무자명 검색 및 필터 조건", description = "근무자명 검색")
     @GetMapping("/searchName")
-    public ApiResponse<Page<CjDto.staffListDtoResponse>> getSearchName(@RequestParam String name,
+    public ApiResponse<Page<CjDto.staffListDtoResponse>> getSearchName(@RequestParam(required = false) String name,
                                                                        @RequestParam Integer page,
                                                                        @RequestParam Integer size,
-                                                                       @RequestParam String start,
-                                                                       @RequestParam String end,
                                                                        @RequestParam(required = false)Integer bpm,
                                                                        @RequestParam(required = false)Integer step,
                                                                        @RequestParam(required = false)Double distance) {
-        Page<CjDto.staffListDtoResponse> result = cjService.searchWorkersByName(name, bpm, step, distance, page, size, start, end);
+        Page<CjDto.staffListDtoResponse> result = cjService.searchWorkersByName(name, bpm, step, distance, page, size);
         return ApiResponse.success(SuccessCode.GET_SUCCESS, result);
     }
 

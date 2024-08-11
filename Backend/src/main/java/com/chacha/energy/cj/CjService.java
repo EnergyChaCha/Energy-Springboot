@@ -31,13 +31,10 @@ public class CjService {
     }
 
     public Page<CjDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
-    Integer page, Integer size, String start, String end) {
+    Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        LocalDateTime startTime = convertStringToTime(start);
-        LocalDateTime endTime = convertStringToTime(end);
-
-        return cjRepository.findByMemberNameContaining(name, bpm, step, distance, startTime, endTime, pageRequest);
+        return cjRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, pageRequest);
     }
 
     public CjDto.staffListDtoResponse saveBpm(CjDto.staffBpmSaveRequest staffBpmSaveRequest){
