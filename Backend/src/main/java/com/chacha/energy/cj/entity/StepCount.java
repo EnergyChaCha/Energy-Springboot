@@ -1,8 +1,9 @@
-package com.chacha.energy.cj.watch;
+package com.chacha.energy.cj.entity;
 
 import com.chacha.energy.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CjWatchEntity extends BaseEntity {
+@Table(name = "cj_watch_entity")
+public class StepCount extends BaseEntity {
     @Column(name = "step_count")
     private Integer stepCount;
 }

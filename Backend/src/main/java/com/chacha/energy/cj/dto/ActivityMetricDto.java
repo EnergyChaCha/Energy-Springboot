@@ -1,8 +1,9 @@
-package com.chacha.energy.cj;
+package com.chacha.energy.cj.dto;
 
+import com.chacha.energy.cj.util.Aes256Util;
 import lombok.*;
 
-public class CjDto {
+public class ActivityMetricDto {
 
     @Getter
     @Setter

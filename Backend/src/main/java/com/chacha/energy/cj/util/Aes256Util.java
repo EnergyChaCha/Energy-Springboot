@@ -1,4 +1,4 @@
-package com.chacha.energy.cj;
+package com.chacha.energy.cj.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;

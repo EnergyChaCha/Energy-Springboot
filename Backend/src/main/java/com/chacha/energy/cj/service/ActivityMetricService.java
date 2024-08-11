@@ -1,8 +1,10 @@
-package com.chacha.energy.cj;
+package com.chacha.energy.cj.service;
 
 import com.chacha.energy.api.auth.repository.MemberRepository;
-import com.chacha.energy.api.report.dto.ReportDto;
-import com.chacha.energy.api.report.dto.ResponseAllReportDto;
+import com.chacha.energy.cj.entity.ActivityMetric;
+import com.chacha.energy.cj.repository.ActivityMetricRepository;
+import com.chacha.energy.cj.dto.ActivityMetricDto;
+import com.chacha.energy.cj.util.Aes256Util;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class CjService {
-    private final CjRepository cjRepository;
+public class ActivityMetricService {
+    private final ActivityMetricRepository activityMetricRepository;
     private final MemberRepository memberRepository;
     private final Aes256Util aes256Util;
 
@@ -34,8 +34,8 @@ public class CjService {
         return LocalDate.parse(time, formatter).atStartOfDay();
     }
 
-    public Page<CjDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
-    Integer page, Integer size, String order) {
+    public Page<ActivityMetricDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
+                                                                            Integer page, Integer size, String order) {
 
 
 
@@ -85,14 +85,14 @@ public class CjService {
         Sort sort = Sort.by(orders);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        return cjRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, pageRequest);
+        return activityMetricRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, pageRequest);
     }
 
-    public CjDto.staffListDtoResponse saveBpm(CjDto.staffBpmSaveRequest staffBpmSaveRequest){
+    public ActivityMetricDto.staffListDtoResponse saveBpm(ActivityMetricDto.staffBpmSaveRequest staffBpmSaveRequest){
         LocalDateTime localDateTime = LocalDateTime.now();
-        CjEntity cjEntity = cjRepository.existsByCurrentDate(staffBpmSaveRequest.getMemberId(),localDateTime);
-        if(cjEntity==null){
-            cjEntity = new CjEntity(memberRepository.findById(staffBpmSaveRequest.getMemberId()).orElseThrow(
+        ActivityMetric activityMetric = activityMetricRepository.existsByCurrentDate(staffBpmSaveRequest.getMemberId(),localDateTime);
+        if(activityMetric ==null){
+            activityMetric = new ActivityMetric(memberRepository.findById(staffBpmSaveRequest.getMemberId()).orElseThrow(
                     () -> new CustomException(ErrorCode.NO_ID, staffBpmSaveRequest.getMemberId())
                     ),
                     staffBpmSaveRequest.getStep(),
@@ -101,28 +101,28 @@ public class CjService {
                     Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
         }
         else{
-            cjEntity.setBpm(Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
-            cjEntity.setStep(staffBpmSaveRequest.getStep());
-            cjEntity.setDistance(staffBpmSaveRequest.getDistance());
+            activityMetric.setBpm(Aes256Util.encrypt(staffBpmSaveRequest.getBpm().toString()));
+            activityMetric.setStep(staffBpmSaveRequest.getStep());
+            activityMetric.setDistance(staffBpmSaveRequest.getDistance());
         }
-        cjRepository.save(cjEntity);
+        activityMetricRepository.save(activityMetric);
 
-        return CjDto.staffListDtoResponse.builder()
-                .memberId(cjEntity.getMember().getId())
-                .name(cjEntity.getMember().getName())
-                .bpm(Aes256Util.decryptBpm(cjEntity.getBpm()))
-                .distance(cjEntity.getDistance())
-                .step(cjEntity.getStep())
+        return ActivityMetricDto.staffListDtoResponse.builder()
+                .memberId(activityMetric.getMember().getId())
+                .name(activityMetric.getMember().getName())
+                .bpm(Aes256Util.decryptBpm(activityMetric.getBpm()))
+                .distance(activityMetric.getDistance())
+                .step(activityMetric.getStep())
                 .build();
     }
 
     public String encodeBpm() {
-        List<CjEntity> entities = cjRepository.findAllByBpmIsNull();
-        for (CjEntity entity : entities) {
+        List<ActivityMetric> entities = activityMetricRepository.findAllByBpmIsNull();
+        for (ActivityMetric entity : entities) {
             String encrypted = Aes256Util.encrypt(entity.getOriginBpm().toString());
             entity.setBpm(encrypted);
         }
-        cjRepository.saveAll(entities);
+        activityMetricRepository.saveAll(entities);
         return "성공";
     }
 }
