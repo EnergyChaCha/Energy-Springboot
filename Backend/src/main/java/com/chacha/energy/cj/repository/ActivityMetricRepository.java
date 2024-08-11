@@ -17,13 +17,13 @@ public interface ActivityMetricRepository extends JpaRepository<ActivityMetric, 
     @Query("SELECT new com.chacha.energy.cj.dto.ActivityMetricDto$staffListDtoResponse(" +
             "m.id, " +
             "m.name, " +
-            "c.bpm," +
+            "c.originBpm," +
             "c.step, " +
             "c.distance) " +
             "FROM ActivityMetric c " +
             "JOIN c.member m " +
             "WHERE m.name LIKE CONCAT('%', :name, '%')" +
-            "AND (:bpm IS NULL OR c.bpm >= :bpm )" +
+            "AND (:bpm IS NULL OR c.originBpm >= :bpm )" +
             "AND (:step IS NULL OR c.step >= :step )" +
             "AND (:distance IS NULL OR c.distance >= :distance )"
     )

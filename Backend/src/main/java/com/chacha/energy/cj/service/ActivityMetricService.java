@@ -79,7 +79,7 @@ public class ActivityMetricService {
 
         List<Sort.Order> orders = new ArrayList<>();
         for (String factor: finalOrder) {
-            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor));
+            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor.equals("bpm")?"originBpm":factor));
         }
 
         Sort sort = Sort.by(orders);
