@@ -3,11 +3,11 @@ package com.chacha.energy.cj.repository;
 import com.chacha.energy.cj.dto.ActivityMetricDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import jakarta.persistence.Query;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,8 +39,8 @@ public class CryptoRepository {
     public String encryptAllBpm(String key) {
         Query query = entityManager.createNativeQuery(
                 "update cj " +
-                    "set bpm=encode(encrypt(convert_to(CAST(origin_bpm AS varchar),'utf8'), convert_to(:key, 'utf8'),'aes'),'hex') " +
-                    "where cj.bpm is null"
+                        "set bpm=encode(encrypt(convert_to(CAST(origin_bpm AS varchar),'utf8'), convert_to(:key, 'utf8'),'aes'),'hex') " +
+                        "where cj.bpm is null"
         );
         query.setParameter("key", key);
         query.executeUpdate();
@@ -59,13 +59,13 @@ public class CryptoRepository {
 
         String filterCluase = "";
         if (bpm != null) {
-            filterCluase +="AND CAST(convert_from(decrypt(decode(c.bpm, 'hex'), convert_to(:key, 'utf8'), 'aes'), 'utf8') AS INTEGER) >= :bpm ";
+            filterCluase += "AND CAST(convert_from(decrypt(decode(c.bpm, 'hex'), convert_to(:key, 'utf8'), 'aes'), 'utf8') AS INTEGER) >= :bpm ";
         }
         if (step != null) {
-            filterCluase +="AND c.step >= :step ";
+            filterCluase += "AND c.step >= :step ";
         }
         if (distance != null) {
-            filterCluase +="AND c.distance >= :distance ";
+            filterCluase += "AND c.distance >= :distance ";
         }
 
         // 다중 정렬 조건을 반영한 ORDER BY 절 추가

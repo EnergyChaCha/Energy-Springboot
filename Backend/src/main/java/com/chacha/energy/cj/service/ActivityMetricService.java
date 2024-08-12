@@ -87,7 +87,7 @@ public class ActivityMetricService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         String key = Hex.encodeHexString(Aes256Util.generateKey().getEncoded());
-        return cryptoRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance,key, pageRequest);
+        return cryptoRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, key, pageRequest);
     }
 
     public ActivityMetricDto.staffListDtoResponse saveBpm(ActivityMetricDto.staffBpmSaveRequest staffBpmSaveRequest) {
