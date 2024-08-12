@@ -74,6 +74,21 @@ public class Aes256Util {
         return cipher.doFinal(bytes);
     }
 
+    public static SecretKey generateKey() {
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+            // generate key with salt
+            PBEKeySpec keySpec = new PBEKeySpec(KEY.toCharArray(), SALT, 3000, 256);
+            SecretKey key = new SecretKeySpec(factory.generateSecret(keySpec).getEncoded(), "AES");
+
+            return key;
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.ERROR_GENERATE_KEY);
+        }
+
+    }
+
     private static SecretKey generateKey(String passPhrase) throws Exception {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 

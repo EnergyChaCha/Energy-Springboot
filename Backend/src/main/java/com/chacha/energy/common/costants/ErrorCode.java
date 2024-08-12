@@ -43,6 +43,7 @@ public enum ErrorCode {
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
     ENCRYPT_FAIL(INTERNAL_SERVER_ERROR, "암호화 실패"),
     DECRYPT_FAIL(INTERNAL_SERVER_ERROR, "복호화 실패"),
+    ERROR_GENERATE_KEY(INTERNAL_SERVER_ERROR, "키 생성 실패"),
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
 
 
