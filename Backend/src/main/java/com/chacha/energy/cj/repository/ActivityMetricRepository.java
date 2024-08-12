@@ -39,7 +39,5 @@ public interface ActivityMetricRepository extends JpaRepository<ActivityMetric, 
     )
     ActivityMetric existsByCurrentDate(@Param("id") Integer id,
                                        @Param("currentDate") LocalDateTime currentDate);
-
-    List<ActivityMetric> findAllByBpmIsNull();
 }
 

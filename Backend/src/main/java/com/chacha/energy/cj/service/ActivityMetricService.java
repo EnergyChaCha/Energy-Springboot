@@ -4,11 +4,14 @@ import com.chacha.energy.api.auth.repository.MemberRepository;
 import com.chacha.energy.cj.dto.ActivityMetricDto;
 import com.chacha.energy.cj.entity.ActivityMetric;
 import com.chacha.energy.cj.repository.ActivityMetricRepository;
+import com.chacha.energy.cj.repository.CryptoRepository;
 import com.chacha.energy.cj.util.Aes256Util;
 import com.chacha.energy.common.costants.ErrorCode;
 import com.chacha.energy.common.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Hex;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,8 +26,16 @@ import java.util.*;
 @Slf4j
 @Transactional
 public class ActivityMetricService {
+
+    private static String KEY;
     private final ActivityMetricRepository activityMetricRepository;
     private final MemberRepository memberRepository;
+    private final CryptoRepository cryptoRepository;
+
+    @Value("${aes256.key}")
+    public void setKEY(String KEY) {
+        ActivityMetricService.KEY = KEY;
+    }
 
     public Page<ActivityMetricDto.staffListDtoResponse> searchWorkersByName(String name, Integer bpm, Integer step, Double distance,
                                                                             Integer page, Integer size, String order) {
@@ -69,13 +80,14 @@ public class ActivityMetricService {
 
         List<Sort.Order> orders = new ArrayList<>();
         for (String factor : finalOrder) {
-            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor.equals("bpm") ? "originBpm" : factor));
+            orders.add(new Sort.Order(sortDirectionByFactor.get(factor), factor.equals("bpm") ? " decrypted_bpm " : factor));
         }
 
         Sort sort = Sort.by(orders);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        return activityMetricRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance, pageRequest);
+        String key = Hex.encodeHexString(Aes256Util.generateKey().getEncoded());
+        return cryptoRepository.findByMemberNameContaining(name == null ? "" : name, bpm, step, distance,key, pageRequest);
     }
 
     public ActivityMetricDto.staffListDtoResponse saveBpm(ActivityMetricDto.staffBpmSaveRequest staffBpmSaveRequest) {
@@ -106,12 +118,8 @@ public class ActivityMetricService {
     }
 
     public String encodeBpm() {
-        List<ActivityMetric> entities = activityMetricRepository.findAllByBpmIsNull();
-        for (ActivityMetric entity : entities) {
-            String encrypted = Aes256Util.encrypt(entity.getOriginBpm().toString());
-            entity.setBpm(encrypted);
-        }
-        activityMetricRepository.saveAll(entities);
+        String key = Hex.encodeHexString(Aes256Util.generateKey().getEncoded());
+        cryptoRepository.encryptAllBpm(key);
         return "성공";
     }
 }
