@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class ReportService {
         PageRequest pageRequest = PageRequest.of(getAllDto.getPage(), getAllDto.getSize());
 
         LocalDateTime startTime = convertStringToTime(getAllDto.getStart());
-        LocalDateTime endTime = convertStringToTime(getAllDto.getEnd());
+        LocalDateTime endTime = LocalDateTime.of(convertStringToTime(getAllDto.getEnd()).toLocalDate(), LocalTime.MAX);
 
         return reportRepository.findAllByTime(startTime, endTime, pageRequest);
     }
@@ -64,7 +65,7 @@ public class ReportService {
         PageRequest pageRequest = PageRequest.of(getAllDto.getPage(), getAllDto.getSize());
 
         LocalDateTime startTime = convertStringToTime(getAllDto.getStart());
-        LocalDateTime endTime = convertStringToTime(getAllDto.getEnd());
+        LocalDateTime endTime = LocalDateTime.of(convertStringToTime(getAllDto.getEnd()).toLocalDate(), LocalTime.MAX);
 
         Page<ResponseAllReportDto> res = reportRepository.findAllByTime(startTime, endTime, pageRequest);
 
@@ -170,7 +171,7 @@ public class ReportService {
         PageRequest pageRequest = PageRequest.of(getReportDto.getPage(), getReportDto.getSize());
 
         LocalDateTime startTime = convertStringToTime(getReportDto.getStart());
-        LocalDateTime endTime = convertStringToTime(getReportDto.getEnd());
+        LocalDateTime endTime = LocalDateTime.of(convertStringToTime(getReportDto.getEnd()).toLocalDate(), LocalTime.MAX);
 
         System.out.println(startTime + " " + endTime);
 
